@@ -70,6 +70,7 @@ public abstract class CameraActivity extends AppCompatActivity
     private LinearLayout bottomSheetLayout;
     private LinearLayout gestureLayout;
     private BottomSheetBehavior sheetBehavior;
+    private LinearLayout edibilityLayout;
     protected TextView recognitionTextView,
             recognition1TextView,
             recognitionValueTextView,
@@ -102,6 +103,7 @@ public abstract class CameraActivity extends AppCompatActivity
         gestureLayout = findViewById(R.id.gesture_layout);
         sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
         bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
+        edibilityLayout = findViewById(R.id.edibility_layout);
 
         ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(
@@ -471,9 +473,21 @@ public abstract class CameraActivity extends AppCompatActivity
                     recognition1TextView.setText(recognitionEdibility.getTitle().equalsIgnoreCase("fresh") ?
                             getString(R.string.product_fresh) : getString(R.string.product_spoiled));
 
-                if (recognitionEdibility.getConfidence() != null)
+                if (recognitionEdibility.getConfidence() != null) {
+                    float edibilityProbability = 100 * recognitionEdibility.getConfidence();
+                    //Установка цвета
+                    if (recognitionEdibility.getTitle().equalsIgnoreCase("fresh")) {
+                        edibilityLayout.setBackgroundColor(getResources()
+                                .getColor(R.color.edibility_fresh, null));
+                    } else {
+                        edibilityLayout.setBackgroundColor(getResources()
+                                .getColor(R.color.edibility_spoiled, null));
+                    }
                     recognition1ValueTextView.setText(
-                            String.format("%.2f", (100 * recognitionEdibility.getConfidence())) + "%");
+                            String.format("%.2f", edibilityProbability) + "%");
+                }
+
+
             }
         }
     }

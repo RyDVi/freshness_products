@@ -5,4 +5,9 @@
     <color name="colorAccent">#425066</color>
 
     <color name="semi_transparent">#66000000</color>
+
+    <color name="edibility_fresh">#34C924</color>
+    <color name="edibility_spoiled">#900020</color>
+    <color name="edibility_unknown">#FFB02E</color>
+
 </resources>
