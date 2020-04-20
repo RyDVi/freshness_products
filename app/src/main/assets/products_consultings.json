@@ -1,0 +1,14 @@
+[
+    {
+      "id": "1",
+      "name": "beef",
+      "name_local": "Beef",
+      "consulting": "Do not eat meat in case..."
+    },
+    {
+      "id": "2",
+      "name": "bread",
+      "name_local": "Bread",
+      "consulting": "Do not eat bread in case..."
+    }
+]
