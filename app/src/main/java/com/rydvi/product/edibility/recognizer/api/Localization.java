@@ -29,3 +29,4 @@ enum JsonLocal {
     abstract String getJsonPath();
 }
 
+

@@ -23,130 +23,110 @@ import android.media.ImageReader.OnImageAvailableListener;
 import android.os.SystemClock;
 import android.util.Size;
 import android.util.TypedValue;
-import android.widget.Toast;
-import java.io.IOException;
-import java.util.List;
 
 import com.rydvi.product.edibility.recognizer.R;
+import com.rydvi.product.edibility.recognizer.api.ProductType;
 import com.rydvi.product.edibility.recognizer.classifier.env.BorderedText;
 import com.rydvi.product.edibility.recognizer.classifier.env.Logger;
 import com.rydvi.product.edibility.recognizer.classifier.tflite.Classifier;
-import com.rydvi.product.edibility.recognizer.classifier.tflite.Classifier.Device;
-import com.rydvi.product.edibility.recognizer.classifier.tflite.Classifier.Model;
+import com.rydvi.product.edibility.recognizer.classifier.tflite.ClassifierEdibility;
+import com.rydvi.product.edibility.recognizer.classifier.tflite.ClassifierProducts;
+
+import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.rydvi.product.edibility.recognizer.api.ProductType.findProductTypeByName;
 
 public class ClassifierActivity extends CameraActivity implements OnImageAvailableListener {
-  private static final Logger LOGGER = new Logger();
-  private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
-  private static final float TEXT_SIZE_DIP = 10;
-  private Bitmap rgbFrameBitmap = null;
-  private long lastProcessingTimeMs;
-  private Integer sensorOrientation;
-  private Classifier classifier;
-  private BorderedText borderedText;
+    private static final Logger LOGGER = new Logger();
+    private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
+    private static final float TEXT_SIZE_DIP = 10;
+    private Bitmap rgbFrameBitmap = null;
+    private Integer sensorOrientation;
+    private ClassifierProducts classifierProducts;
+    private Map<ProductType.EProductType, ClassifierEdibility> classifierEdibility;
+    private BorderedText borderedText;
 
-  @Override
-  protected int getLayoutId() {
-    return R.layout.camera_connection_fragment;
-  }
-
-  @Override
-  protected Size getDesiredPreviewFrameSize() {
-    return DESIRED_PREVIEW_SIZE;
-  }
-
-  @Override
-  public void onPreviewSizeChosen(final Size size, final int rotation) {
-    final float textSizePx =
-        TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP, getResources().getDisplayMetrics());
-    borderedText = new BorderedText(textSizePx);
-    borderedText.setTypeface(Typeface.MONOSPACE);
-
-    recreateClassifier(getModel(), getDevice(), getNumThreads());
-    if (classifier == null) {
-      LOGGER.e("No classifier on preview!");
-      return;
+    @Override
+    protected int getLayoutId() {
+        return R.layout.camera_connection_fragment;
     }
 
-    previewWidth = size.getWidth();
-    previewHeight = size.getHeight();
+    @Override
+    protected Size getDesiredPreviewFrameSize() {
+        return DESIRED_PREVIEW_SIZE;
+    }
 
-    sensorOrientation = rotation - getScreenOrientation();
-    LOGGER.i("Camera orientation relative to screen canvas: %d", sensorOrientation);
+    @Override
+    public void onPreviewSizeChosen(final Size size, final int rotation) {
+        final float textSizePx =
+                TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP, getResources().getDisplayMetrics());
+        borderedText = new BorderedText(textSizePx);
+        borderedText.setTypeface(Typeface.MONOSPACE);
 
-    LOGGER.i("Initializing at size %dx%d", previewWidth, previewHeight);
-    rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
-  }
+        //Создание классификаторов
+        try {
+            //Создаем классификатор продуктов
+            classifierProducts = Classifier.createProductsClassifier(this);
+            //Создаем map классификаторов для определения съедобности продуктов.
+            //Создаем сразу, чтобы не пересоздавать при определении съедобности.
+            classifierEdibility = new LinkedHashMap<>();
+            for (ProductType.EProductType productType : ProductType.EProductType.values()) {
+                classifierEdibility.put(productType, Classifier.createEdibilityClassifier(this, productType));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-  @Override
-  protected void processImage() {
-    rgbFrameBitmap.setPixels(getRgbBytes(), 0, previewWidth, 0, 0, previewWidth, previewHeight);
-    final int imageSizeX = classifier.getImageSizeX();
-    final int imageSizeY = classifier.getImageSizeY();
-    final int cropSize = Math.min(previewWidth, previewHeight);
+        if (classifierProducts == null) {
+            LOGGER.e("No classifier on preview!");
+            return;
+        }
 
-    runInBackground(
-        new Runnable() {
-          @Override
-          public void run() {
-            if (classifier != null) {
-              final long startTime = SystemClock.uptimeMillis();
-              final List<Classifier.Recognition> results =
-                  classifier.recognizeImage(rgbFrameBitmap, sensorOrientation);
-              lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
-              LOGGER.v("Detect: %s", results);
+        previewWidth = size.getWidth();
+        previewHeight = size.getHeight();
 
-              runOnUiThread(
-                  new Runnable() {
-                    @Override
-                    public void run() {
-                      showResultsInBottomSheet(results);
-                      showFrameInfo(previewWidth + "x" + previewHeight);
-                      showCropInfo(imageSizeX + "x" + imageSizeY);
-                      showCameraResolution(cropSize + "x" + cropSize);
-                      showRotationInfo(String.valueOf(sensorOrientation));
-                      showInference(lastProcessingTimeMs + "ms");
+        sensorOrientation = rotation - getScreenOrientation();
+        LOGGER.i("Camera orientation relative to screen canvas: %d", sensorOrientation);
+
+        LOGGER.i("Initializing at size %dx%d", previewWidth, previewHeight);
+        rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
+    }
+
+    @Override
+    protected void processImage() {
+        rgbFrameBitmap.setPixels(getRgbBytes(), 0, previewWidth, 0, 0, previewWidth, previewHeight);
+
+        runInBackground(() -> {
+            if (classifierProducts != null) {
+                final List<Classifier.Recognition> resultsClassifierProducts =
+                        classifierProducts.recognizeImage(rgbFrameBitmap, sensorOrientation);
+
+                //Определяем, какой классификатор использовать
+                List<Classifier.Recognition> resultsClassifierEdibility = null;
+                //Определяем, есть ли результат от классификации продуктов
+                if (resultsClassifierProducts.size() >= 1) {
+                    Classifier.Recognition recognition = resultsClassifierProducts.get(0);
+                    if (recognition != null) {
+                        //Ищем тип продукта по имени из результата классификации продуктов
+                        ProductType.EProductType productType = findProductTypeByName(recognition.getTitle());
+                        //Если тип найден, то классифицируем изображение на съедобность
+                        if (productType != null) {
+                            resultsClassifierEdibility = classifierEdibility.get(productType)
+                                    .recognizeImage(rgbFrameBitmap, sensorOrientation);
+                        }
                     }
-                  });
+                }
+
+                //Без этого не передаст параметры в функцию (вызывает ошибку)
+                final List<Classifier.Recognition> finalResultsClassifierEdibility = resultsClassifierEdibility;
+                runOnUiThread(() -> showResultsInBottomSheet(resultsClassifierProducts, finalResultsClassifierEdibility));
             }
             readyForNextImage();
-          }
         });
-  }
+    }
 
-  @Override
-  protected void onInferenceConfigurationChanged() {
-    if (rgbFrameBitmap == null) {
-      // Defer creation until we're getting camera frames.
-      return;
-    }
-    final Device device = getDevice();
-    final Model model = getModel();
-    final int numThreads = getNumThreads();
-    runInBackground(() -> recreateClassifier(model, device, numThreads));
-  }
-
-  private void recreateClassifier(Model model, Device device, int numThreads) {
-    if (classifier != null) {
-      LOGGER.d("Closing classifier.");
-      classifier.close();
-      classifier = null;
-    }
-    if (device == Device.GPU && model == Model.QUANTIZED) {
-      LOGGER.d("Not creating classifier: GPU doesn't support quantized models.");
-      runOnUiThread(
-          () -> {
-            Toast.makeText(this, "GPU does not yet supported quantized models.", Toast.LENGTH_LONG)
-                .show();
-          });
-      return;
-    }
-    try {
-      LOGGER.d(
-          "Creating classifier (model=%s, device=%s, numThreads=%d)", model, device, numThreads);
-      classifier = Classifier.create(this, model, device, numThreads);
-    } catch (IOException e) {
-      LOGGER.e(e, "Failed to create classifier.");
-    }
-  }
 }
