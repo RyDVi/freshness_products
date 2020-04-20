@@ -36,12 +36,15 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.rydvi.product.edibility.recognizer.R;
+import com.rydvi.product.edibility.recognizer.api.ProductType;
 import com.rydvi.product.edibility.recognizer.classifier.env.ImageUtils;
 import com.rydvi.product.edibility.recognizer.classifier.env.Logger;
 import com.rydvi.product.edibility.recognizer.classifier.tflite.Classifier.Recognition;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+
+import static com.rydvi.product.edibility.recognizer.api.ProductType.findProductTypeByName;
 
 public abstract class CameraActivity extends AppCompatActivity
         implements OnImageAvailableListener,
@@ -145,10 +148,10 @@ public abstract class CameraActivity extends AppCompatActivity
                     }
                 });
 
-        recognitionTextView = findViewById(R.id.detected_item);
-        recognitionValueTextView = findViewById(R.id.detected_item_value);
-        recognition1TextView = findViewById(R.id.detected_item1);
-        recognition1ValueTextView = findViewById(R.id.detected_item1_value);
+        recognitionTextView = findViewById(R.id.text_product);
+        recognitionValueTextView = findViewById(R.id.text_product_probability);
+        recognition1TextView = findViewById(R.id.text_edibility);
+        recognition1ValueTextView = findViewById(R.id.text_edibility_probability);
     }
 
     protected int[] getRgbBytes() {
@@ -445,23 +448,32 @@ public abstract class CameraActivity extends AppCompatActivity
 
     @UiThread
     protected void showResultsInBottomSheet(List<Recognition> resultsClassifierProducts, List<Recognition> resultsClassifierEdibility) {
-        if (resultsClassifierProducts != null && resultsClassifierProducts.size() >= 2) {
-            Recognition recognition = resultsClassifierProducts.get(0);
-            if (recognition != null) {
-                if (recognition.getTitle() != null)
-                    recognitionTextView.setText(recognition.getTitle());
-                if (recognition.getConfidence() != null)
+        if (resultsClassifierProducts != null && resultsClassifierProducts.size() >= 1) {
+            Recognition recognitionProduct = resultsClassifierProducts.get(0);
+            if (recognitionProduct != null) {
+                if (recognitionProduct.getTitle() != null) {
+                    //Ищем тип продукта из опознанного продукта
+                    ProductType.EProductType productType = findProductTypeByName(recognitionProduct.getTitle());
+                    //Если тип продукта найден, то возвращаем текст перевода, иначе оставляем как есть
+                    recognitionTextView.setText((productType != null) ?
+                            productType.getTranlatedName(this) : recognitionProduct.getTitle());
+                }
+                if (recognitionProduct.getConfidence() != null)
                     recognitionValueTextView.setText(
-                            String.format("%.2f", (100 * recognition.getConfidence())) + "%");
+                            String.format("%.2f", (100 * recognitionProduct.getConfidence())) + "%");
             }
+        }
+        if (resultsClassifierEdibility != null && resultsClassifierProducts.size() >= 1) {
+            Recognition recognitionEdibility = resultsClassifierEdibility.get(0);
+            if (recognitionEdibility != null) {
+                if (recognitionEdibility.getTitle() != null)
+                    //Подбираем текст под свежий/испорченный
+                    recognition1TextView.setText(recognitionEdibility.getTitle().equalsIgnoreCase("fresh") ?
+                            getString(R.string.product_fresh) : getString(R.string.product_spoiled));
 
-            Recognition recognition1 = resultsClassifierProducts.get(1);
-            if (recognition1 != null) {
-                if (recognition1.getTitle() != null)
-                    recognition1TextView.setText(recognition1.getTitle());
-                if (recognition1.getConfidence() != null)
+                if (recognitionEdibility.getConfidence() != null)
                     recognition1ValueTextView.setText(
-                            String.format("%.2f", (100 * recognition1.getConfidence())) + "%");
+                            String.format("%.2f", (100 * recognitionEdibility.getConfidence())) + "%");
             }
         }
     }

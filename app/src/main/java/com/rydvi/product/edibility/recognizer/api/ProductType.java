@@ -1,13 +1,17 @@
 package com.rydvi.product.edibility.recognizer.api;
 
 
+import android.content.Context;
+
+import com.rydvi.product.edibility.recognizer.R;
+
 import static com.rydvi.product.edibility.recognizer.api.ProductType.EProductType.*;
 
 public final class ProductType {
     public static EProductType findProductTypeByName(String name) {
-        if (name == BEEF.getName()) {
+        if (name.equalsIgnoreCase(BEEF.getName())) {
             return BEEF;
-        } else if (name == BREAD.getName()) {
+        } else if (name.equalsIgnoreCase(BREAD.getName())) {
             return BREAD;
         } else {
             return null;
@@ -23,13 +27,19 @@ public final class ProductType {
 
             @Override
             public String getModelPath() {
-                return null;
+                return "mobilenet_v1_1.0_224.tflite";//Временно
             }
 
             @Override
             public String getLabelsPath() {
-                return null;
+                return "labels.txt";//Временно
             }
+
+            @Override
+            public String getTranlatedName(Context context ) {
+                return context.getResources().getString(R.string.beef_name);
+            }
+
         },
         BREAD {
             @Override
@@ -46,6 +56,11 @@ public final class ProductType {
             public String getLabelsPath() {
                 return "bread_fresh_spoiled.txt";
             }
+
+            @Override
+            public String getTranlatedName(Context context) {
+                return context.getResources().getString(R.string.bread_name);
+            }
         };
 
         public abstract String getName();
@@ -53,6 +68,8 @@ public final class ProductType {
         public abstract String getModelPath();
 
         public abstract String getLabelsPath();
+
+        public abstract String getTranlatedName(Context context);
     }
 }
 
