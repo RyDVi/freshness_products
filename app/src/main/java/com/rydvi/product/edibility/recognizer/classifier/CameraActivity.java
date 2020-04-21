@@ -3,6 +3,7 @@ package com.rydvi.product.edibility.recognizer.classifier;
 import android.Manifest;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
@@ -41,6 +42,7 @@ import com.rydvi.product.edibility.recognizer.api.ProductType;
 import com.rydvi.product.edibility.recognizer.classifier.env.ImageUtils;
 import com.rydvi.product.edibility.recognizer.classifier.env.Logger;
 import com.rydvi.product.edibility.recognizer.classifier.tflite.Classifier.Recognition;
+import com.rydvi.product.edibility.recognizer.consulting.ProductDetailActivity;
 
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -103,9 +105,11 @@ public abstract class CameraActivity extends AppCompatActivity
         layoutEdibilityWindow.setOnClickListener(view -> {
             //Навигация к продукту, если он был найден.
             //Наденный продукт хранится в переменной findedProduct
-            if(findedProduct != null){
+            if (findedProduct != null) {
                 //Необходимо реализовать навигацию к ProductDetailActivity с ИД продукта
-                //findProductTypeByName(findedProduct)
+                Intent intent = new Intent(this, ProductDetailActivity.class);
+                intent.putExtra(ProductDetailActivity.ARG_PRODUCT_ID, findedProduct.getId());
+                startActivity(intent);
             }
         });
     }

@@ -6,6 +6,8 @@ import android.os.Bundle;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +15,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.rydvi.product.edibility.recognizer.R;
+import com.rydvi.product.edibility.recognizer.api.Product;
+import com.rydvi.product.edibility.recognizer.api.ProductsViewModel;
 
 
 public class ProductDetailFragment extends Fragment {
 
-    public static final String ARG_ITEM_ID = "item_id";
+    public static final String ARG_PRODUCT_ID = "product_id";
+    private ProductsViewModel productsViewModel = null;
+    private Product detailProduct;
 
     public ProductDetailFragment() {
     }
@@ -25,19 +31,23 @@ public class ProductDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
-//            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-//
-//            Activity activity = this.getActivity();
-//            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-//            if (appBarLayout != null) {
-//                appBarLayout.setTitle(mItem.content);
-//            }
-        }
+        productsViewModel = ViewModelProviders.of(this).get(ProductsViewModel.class);
+        CollapsingToolbarLayout appBarLayout = getActivity().findViewById(R.id.toolbar_layout);
+        productsViewModel.getProducts().observe(this, products -> {
+            if (getArguments().containsKey(ARG_PRODUCT_ID)) {
+                int productId = getArguments().getInt(ARG_PRODUCT_ID,0);
+                for (Product product : products) {
+                    if (product.getId().equals(productId)){
+                        detailProduct = product;
+                        if (appBarLayout != null) {
+                            appBarLayout.setTitle(detailProduct.getNameLocal());
+                        }
+                        break;
+                    }
+                }
+            }
+        });
+        productsViewModel.refreshProducts();
     }
 
     @Override
