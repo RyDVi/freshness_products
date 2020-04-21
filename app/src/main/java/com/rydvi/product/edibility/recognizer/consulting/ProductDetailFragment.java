@@ -24,6 +24,7 @@ public class ProductDetailFragment extends Fragment {
     public static final String ARG_PRODUCT_ID = "product_id";
     private ProductsViewModel productsViewModel = null;
     private Product detailProduct;
+    private TextView textProductConsulting;
 
     public ProductDetailFragment() {
     }
@@ -31,23 +32,7 @@ public class ProductDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        productsViewModel = ViewModelProviders.of(this).get(ProductsViewModel.class);
-        CollapsingToolbarLayout appBarLayout = getActivity().findViewById(R.id.toolbar_layout);
-        productsViewModel.getProducts().observe(this, products -> {
-            if (getArguments().containsKey(ARG_PRODUCT_ID)) {
-                int productId = getArguments().getInt(ARG_PRODUCT_ID,0);
-                for (Product product : products) {
-                    if (product.getId().equals(productId)){
-                        detailProduct = product;
-                        if (appBarLayout != null) {
-                            appBarLayout.setTitle(detailProduct.getNameLocal());
-                        }
-                        break;
-                    }
-                }
-            }
-        });
-        productsViewModel.refreshProducts();
+
     }
 
     @Override
@@ -55,10 +40,26 @@ public class ProductDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.product_detail, container, false);
 
-        // Show the dummy content as text in a TextView.
-//        if (mItem != null) {
-//            ((TextView) rootView.findViewById(R.id.product_detail)).setText(mItem.details);
-//        }
+        textProductConsulting = rootView.findViewById(R.id.product_detail);
+
+        productsViewModel = ViewModelProviders.of(this).get(ProductsViewModel.class);
+        CollapsingToolbarLayout appBarLayout = getActivity().findViewById(R.id.toolbar_layout);
+        productsViewModel.getProducts().observe(getViewLifecycleOwner(), products -> {
+            if (getArguments().containsKey(ARG_PRODUCT_ID)) {
+                int productId = getArguments().getInt(ARG_PRODUCT_ID, 0);
+                for (Product product : products) {
+                    if (product.getId().equals(productId)) {
+                        detailProduct = product;
+                        if (appBarLayout != null) {
+                            appBarLayout.setTitle(detailProduct.getNameLocal());
+                        }
+                        textProductConsulting.setText(product.getConsulting());
+                        break;
+                    }
+                }
+            }
+        });
+        productsViewModel.refreshProducts();
 
         return rootView;
     }
