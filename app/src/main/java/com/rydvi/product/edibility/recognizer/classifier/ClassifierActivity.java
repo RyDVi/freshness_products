@@ -1,14 +1,21 @@
 package com.rydvi.product.edibility.recognizer.classifier;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Typeface;
 import android.media.ImageReader.OnImageAvailableListener;
+import android.os.Build;
 import android.util.Size;
 import android.util.TypedValue;
 
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.rydvi.product.edibility.recognizer.R;
+import com.rydvi.product.edibility.recognizer.api.Product;
 import com.rydvi.product.edibility.recognizer.api.ProductType;
+import com.rydvi.product.edibility.recognizer.api.ProductsViewModel;
 import com.rydvi.product.edibility.recognizer.classifier.env.BorderedText;
 import com.rydvi.product.edibility.recognizer.classifier.env.Logger;
 import com.rydvi.product.edibility.recognizer.classifier.tflite.Classifier;
@@ -16,6 +23,7 @@ import com.rydvi.product.edibility.recognizer.classifier.tflite.ClassifierEdibil
 import com.rydvi.product.edibility.recognizer.classifier.tflite.ClassifierProducts;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +37,8 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
     private Bitmap rgbFrameBitmap = null;
     private Integer sensorOrientation;
     private ClassifierProducts classifierProducts;
-    private Map<ProductType.EProductType, ClassifierEdibility> classifierEdibility;
+    private Map<Product, ClassifierEdibility> edibilityClassifiers;
+    private ProductsViewModel productsViewModel;
     private BorderedText borderedText;
 
     @Override
@@ -42,6 +51,7 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
         return DESIRED_PREVIEW_SIZE;
     }
 
+
     @Override
     public void onPreviewSizeChosen(final Size size, final int rotation) {
         final float textSizePx =
@@ -50,24 +60,31 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
         borderedText = new BorderedText(textSizePx);
         borderedText.setTypeface(Typeface.MONOSPACE);
 
-        //Создание классификаторов
-        try {
-            //Создаем классификатор продуктов
-            classifierProducts = Classifier.createProductsClassifier(this);
-            //Создаем map классификаторов для определения съедобности продуктов.
-            //Создаем сразу, чтобы не пересоздавать при определении съедобности.
-            classifierEdibility = new LinkedHashMap<>();
-            for (ProductType.EProductType productType : ProductType.EProductType.values()) {
-                classifierEdibility.put(productType, Classifier.createEdibilityClassifier(this, productType));
+        productsViewModel = ViewModelProviders.of(this).get(ProductsViewModel.class);
+        Activity that = this;
+        productsViewModel.getProducts().observe(this, products -> {
+            //Чтобы не пересоздавать классификаторы
+            if (classifierProducts == null) {
+                try {
+                    edibilityClassifiers = new HashMap<>();
+                    //Создание классификаторов
+                    for (Product product : products) {
+                        //Создаем map классификаторов для определения съедобности продуктов.
+                        //Создаем сразу, чтобы не пересоздавать при определении съедобности.
+                        edibilityClassifiers.put(product, Classifier.createEdibilityClassifier(that, product));
+                    }
+                    //Создаем классификатор продуктов
+                    classifierProducts = Classifier.createProductsClassifier(that);
+                    if (classifierProducts == null) {
+                        LOGGER.e("No classifier on preview!");
+                        return;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (classifierProducts == null) {
-            LOGGER.e("No classifier on preview!");
-            return;
-        }
+        });
+        productsViewModel.refreshProducts();
 
         previewWidth = size.getWidth();
         previewHeight = size.getHeight();
@@ -87,23 +104,26 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
             if (classifierProducts != null) {
                 final List<Classifier.Recognition> resultsClassifierProducts =
                         classifierProducts.recognizeImage(rgbFrameBitmap, sensorOrientation);
-
+                findedProduct = null;
                 //Определяем, какой классификатор использовать
                 List<Classifier.Recognition> resultsClassifierEdibility = null;
                 //Определяем, есть ли результат от классификации продуктов
                 if (resultsClassifierProducts.size() >= 1) {
                     Classifier.Recognition recognition = resultsClassifierProducts.get(0);
                     if (recognition != null) {
-                        //Ищем тип продукта по имени из результата классификации продуктов
-                        ProductType.EProductType productType = findProductTypeByName(recognition.getTitle());
-                        //Если тип найден, то классифицируем изображение на съедобность
-                        if (productType != null) {
-                            resultsClassifierEdibility = classifierEdibility.get(productType)
-                                    .recognizeImage(rgbFrameBitmap, sensorOrientation);
+                        for (Map.Entry<Product, ClassifierEdibility> entryEdibilityClassifier :
+                                edibilityClassifiers.entrySet()) {
+                            //Ищем классификатор свежести по имени продукта и запускаем распознавание
+                            if (entryEdibilityClassifier.getKey().getName()
+                                    .equalsIgnoreCase(recognition.getTitle())) {
+                                findedProduct = entryEdibilityClassifier.getKey();
+                                resultsClassifierEdibility = entryEdibilityClassifier.getValue()
+                                        .recognizeImage(rgbFrameBitmap, sensorOrientation);
+                                break;
+                            }
                         }
                     }
                 }
-
                 //Без этого не передаст параметры в функцию (вызывает ошибку)
                 final List<Classifier.Recognition> finalResultsClassifierEdibility = resultsClassifierEdibility;
                 runOnUiThread(() -> showResultsInWindow(resultsClassifierProducts, finalResultsClassifierEdibility));

@@ -3,12 +3,16 @@
       "id": "1",
       "name": "beef",
       "name_local": "Beef",
+      "model_filename": "mobilenet_v1_1.0_224.tflite",
+      "labels_filename": "labels.txt",
       "consulting": "Do not eat meat in case..."
     },
     {
       "id": "2",
       "name": "bread",
       "name_local": "Bread",
+      "model_filename": "bread_fresh_spoiled.tflite",
+      "labels_filename": "bread_fresh_spoiled.txt",
       "consulting": "Do not eat bread in case..."
     }
 ]

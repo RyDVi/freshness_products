@@ -36,6 +36,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.rydvi.product.edibility.recognizer.R;
+import com.rydvi.product.edibility.recognizer.api.Product;
 import com.rydvi.product.edibility.recognizer.api.ProductType;
 import com.rydvi.product.edibility.recognizer.classifier.env.ImageUtils;
 import com.rydvi.product.edibility.recognizer.classifier.env.Logger;
@@ -72,6 +73,7 @@ public abstract class CameraActivity extends AppCompatActivity
             recognition1TextView,
             recognitionValueTextView,
             recognition1ValueTextView;
+    protected Product findedProduct = null;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -97,6 +99,15 @@ public abstract class CameraActivity extends AppCompatActivity
         recognitionValueTextView = findViewById(R.id.text_product_probability);
         recognition1TextView = findViewById(R.id.text_edibility);
         recognition1ValueTextView = findViewById(R.id.text_edibility_probability);
+
+        layoutEdibilityWindow.setOnClickListener(view -> {
+            //Навигация к продукту, если он был найден.
+            //Наденный продукт хранится в переменной findedProduct
+            if(findedProduct != null){
+                //Необходимо реализовать навигацию к ProductDetailActivity с ИД продукта
+                //findProductTypeByName(findedProduct)
+            }
+        });
     }
 
     protected int[] getRgbBytes() {
@@ -392,16 +403,15 @@ public abstract class CameraActivity extends AppCompatActivity
     }
 
     @UiThread
-    protected void showResultsInWindow(List<Recognition> resultsClassifierProducts, List<Recognition> resultsClassifierEdibility) {
+    protected void showResultsInWindow(List<Recognition> resultsClassifierProducts,
+                                       List<Recognition> resultsClassifierEdibility) {
         if (resultsClassifierProducts != null && resultsClassifierProducts.size() >= 1) {
             Recognition recognitionProduct = resultsClassifierProducts.get(0);
             if (recognitionProduct != null) {
                 if (recognitionProduct.getTitle() != null) {
-                    //Ищем тип продукта из опознанного продукта
-                    ProductType.EProductType productType = findProductTypeByName(recognitionProduct.getTitle());
-                    //Если тип продукта найден, то возвращаем текст перевода, иначе оставляем как есть
-                    recognitionTextView.setText((productType != null) ?
-                            productType.getTranlatedName(this) : recognitionProduct.getTitle());
+                    recognitionTextView.setText((findedProduct != null) ?
+                            findedProduct.getNameLocal() : recognitionProduct.getTitle());
+
                 }
                 if (recognitionProduct.getConfidence() != null)
                     recognitionValueTextView.setText(
@@ -426,8 +436,6 @@ public abstract class CameraActivity extends AppCompatActivity
                     recognition1ValueTextView.setText(
                             String.format("%.2f", edibilityProbability) + "%");
                 }
-
-
             }
         }
     }

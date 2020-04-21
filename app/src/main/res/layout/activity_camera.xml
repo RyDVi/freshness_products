@@ -71,7 +71,7 @@
                 android:id="@+id/text_product_probability"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="right"
+                android:gravity="end"
                 android:textColor="@android:color/black"
                 android:textSize="16sp" />
 
@@ -95,7 +95,7 @@
                 android:id="@+id/text_edibility_probability"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="right"
+                android:gravity="end"
                 android:textColor="@android:color/black"
                 android:textSize="16sp" />
 

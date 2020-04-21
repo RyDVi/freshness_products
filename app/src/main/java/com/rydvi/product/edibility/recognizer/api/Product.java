@@ -20,6 +20,28 @@ class Product {
     @JsonProperty("consulting")
     private String consulting;
 
+    @JsonProperty("model_filename")
+    private String modelFilename;
+
+    @JsonProperty("labels_filename")
+    private String labelsFilename;
+
+    public void setModelFilename(String modelFilename) {
+        this.modelFilename = modelFilename;
+    }
+
+    public void setLabelsFilename(String labelsFilename) {
+        this.labelsFilename = labelsFilename;
+    }
+
+    public String getModelFilename() {
+        return modelFilename;
+    }
+
+    public String getLabelsFilename() {
+        return labelsFilename;
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }

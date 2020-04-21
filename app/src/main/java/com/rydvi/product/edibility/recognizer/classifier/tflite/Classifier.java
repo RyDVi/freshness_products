@@ -21,6 +21,7 @@ import android.graphics.RectF;
 import android.os.SystemClock;
 import android.os.Trace;
 
+import com.rydvi.product.edibility.recognizer.api.Product;
 import com.rydvi.product.edibility.recognizer.api.ProductType;
 import com.rydvi.product.edibility.recognizer.classifier.env.Logger;
 
@@ -53,7 +54,7 @@ import java.util.PriorityQueue;
  */
 public abstract class Classifier {
     private static final Logger LOGGER = new Logger();
-    protected ProductType.EProductType productType;
+    protected Product product;
 
     /**
      * The runtime device type used for executing classification.
@@ -125,8 +126,8 @@ public abstract class Classifier {
     private TensorProcessor probabilityProcessor;
 
 
-    public static ClassifierEdibility createEdibilityClassifier(Activity activity, ProductType.EProductType productType) throws IOException {
-        return new ClassifierEdibility(activity, Device.CPU, 1, productType);
+    public static ClassifierEdibility createEdibilityClassifier(Activity activity, Product product) throws IOException {
+        return new ClassifierEdibility(activity, Device.CPU, 1, product);
     }
 
     public static ClassifierProducts createProductsClassifier(Activity activity) throws IOException {
@@ -218,8 +219,8 @@ public abstract class Classifier {
         _classifierConstructor(activity, device, numThreads);
     }
 
-    protected Classifier(Activity activity, Device device, int numThreads, ProductType.EProductType productType) throws IOException {
-        this.productType = productType;
+    protected Classifier(Activity activity, Device device, int numThreads, Product product) throws IOException {
+        this.product = product;
         _classifierConstructor(activity, device, numThreads);
     }
 

@@ -2,6 +2,7 @@ package com.rydvi.product.edibility.recognizer.classifier.tflite;
 
 import android.app.Activity;
 
+import com.rydvi.product.edibility.recognizer.api.Product;
 import com.rydvi.product.edibility.recognizer.api.ProductType;
 
 import org.tensorflow.lite.support.common.TensorOperator;
@@ -35,8 +36,8 @@ public class ClassifierFloatMobileNet extends Classifier {
     super(activity, device, numThreads);
   }
 
-  protected ClassifierFloatMobileNet(Activity activity, Device device, int numThreads, ProductType.EProductType productType) throws IOException {
-    super(activity, device, numThreads, productType);
+  protected ClassifierFloatMobileNet(Activity activity, Device device, int numThreads, Product product) throws IOException {
+    super(activity, device, numThreads, product);
   }
 
   @Override
