@@ -26,8 +26,7 @@
         android:orientation="vertical">
 
 
-        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
+        <FrameLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -40,19 +39,68 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_alignParentTop="true"
-            android:background="@color/semi_transparent">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/tfl2_logo" />
-        </androidx.appcompat.widget.Toolbar>
+            android:background="@color/semi_transparent"/>
 
     </RelativeLayout>
 
-    <include
-        android:id="@+id/bottom_sheet_layout"
-        layout="@layout/layout_bottom_sheet"
-        android:visibility="visible" />
+    <LinearLayout
+        android:id="@+id/layout_edibility_window"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="100dp"
+        android:background="@drawable/rectangle_rounded_spoiled"
+        android:orientation="vertical"
+        android:padding="@dimen/list_item_padding">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_product"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/reconize_data_loading"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/text_product_probability"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/edibility_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_edibility"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/text_edibility_probability"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

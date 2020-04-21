@@ -67,20 +67,11 @@ public abstract class CameraActivity extends AppCompatActivity
     private int yRowStride;
     private Runnable postInferenceCallback;
     private Runnable imageConverter;
-    private LinearLayout bottomSheetLayout;
-    private LinearLayout gestureLayout;
-    private BottomSheetBehavior sheetBehavior;
-    private LinearLayout edibilityLayout;
+    private LinearLayout layoutEdibilityWindow;
     protected TextView recognitionTextView,
             recognition1TextView,
             recognitionValueTextView,
             recognition1ValueTextView;
-    protected TextView frameValueTextView,
-            cropValueTextView,
-            cameraResolutionTextView,
-            rotationTextView,
-            inferenceTimeTextView;
-    protected ImageView bottomSheetArrowImageView;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -92,6 +83,7 @@ public abstract class CameraActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (hasPermission()) {
             setFragment();
@@ -99,57 +91,8 @@ public abstract class CameraActivity extends AppCompatActivity
             requestPermission();
         }
 
-        bottomSheetLayout = findViewById(R.id.bottom_sheet_layout);
-        gestureLayout = findViewById(R.id.gesture_layout);
-        sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
-        bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
-        edibilityLayout = findViewById(R.id.edibility_layout);
-
-        ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                            gestureLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                        } else {
-                            gestureLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        }
-                        int height = gestureLayout.getMeasuredHeight();
-
-                        sheetBehavior.setPeekHeight(height);
-                    }
-                });
-        sheetBehavior.setHideable(false);
-
-        sheetBehavior.setBottomSheetCallback(
-                new BottomSheetBehavior.BottomSheetCallback() {
-                    @Override
-                    public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                        switch (newState) {
-                            case BottomSheetBehavior.STATE_HIDDEN:
-                                break;
-                            case BottomSheetBehavior.STATE_EXPANDED: {
-                                bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_down);
-                            }
-                            break;
-                            case BottomSheetBehavior.STATE_COLLAPSED: {
-                                bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_up);
-                            }
-                            break;
-                            case BottomSheetBehavior.STATE_DRAGGING:
-                                break;
-                            case BottomSheetBehavior.STATE_SETTLING:
-                                bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_up);
-                                break;
-                        }
-                    }
-
-                    @Override
-                    public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                    }
-                });
-
+        //Окно с данными о распознавании
+        layoutEdibilityWindow = findViewById(R.id.layout_edibility_window);
         recognitionTextView = findViewById(R.id.text_product);
         recognitionValueTextView = findViewById(R.id.text_product_probability);
         recognition1TextView = findViewById(R.id.text_edibility);
@@ -449,7 +392,7 @@ public abstract class CameraActivity extends AppCompatActivity
     }
 
     @UiThread
-    protected void showResultsInBottomSheet(List<Recognition> resultsClassifierProducts, List<Recognition> resultsClassifierEdibility) {
+    protected void showResultsInWindow(List<Recognition> resultsClassifierProducts, List<Recognition> resultsClassifierEdibility) {
         if (resultsClassifierProducts != null && resultsClassifierProducts.size() >= 1) {
             Recognition recognitionProduct = resultsClassifierProducts.get(0);
             if (recognitionProduct != null) {
@@ -472,16 +415,13 @@ public abstract class CameraActivity extends AppCompatActivity
                     //Подбираем текст под свежий/испорченный
                     recognition1TextView.setText(recognitionEdibility.getTitle().equalsIgnoreCase("fresh") ?
                             getString(R.string.product_fresh) : getString(R.string.product_spoiled));
-
                 if (recognitionEdibility.getConfidence() != null) {
                     float edibilityProbability = 100 * recognitionEdibility.getConfidence();
                     //Установка цвета
                     if (recognitionEdibility.getTitle().equalsIgnoreCase("fresh")) {
-                        edibilityLayout.setBackgroundColor(getResources()
-                                .getColor(R.color.edibility_fresh, null));
+                        layoutEdibilityWindow.setBackground(getResources().getDrawable(R.drawable.rectangle_rounded_freshed, null));
                     } else {
-                        edibilityLayout.setBackgroundColor(getResources()
-                                .getColor(R.color.edibility_spoiled, null));
+                        layoutEdibilityWindow.setBackground(getResources().getDrawable(R.drawable.rectangle_rounded_spoiled, null));
                     }
                     recognition1ValueTextView.setText(
                             String.format("%.2f", edibilityProbability) + "%");

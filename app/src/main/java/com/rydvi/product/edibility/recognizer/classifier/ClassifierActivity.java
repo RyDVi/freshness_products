@@ -106,7 +106,7 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
 
                 //Без этого не передаст параметры в функцию (вызывает ошибку)
                 final List<Classifier.Recognition> finalResultsClassifierEdibility = resultsClassifierEdibility;
-                runOnUiThread(() -> showResultsInBottomSheet(resultsClassifierProducts, finalResultsClassifierEdibility));
+                runOnUiThread(() -> showResultsInWindow(resultsClassifierProducts, finalResultsClassifierEdibility));
             }
             readyForNextImage();
         });

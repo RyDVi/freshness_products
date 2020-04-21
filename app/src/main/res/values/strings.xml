@@ -30,4 +30,5 @@
     <string name="bread_name">Bread</string>
     <string name="product_fresh">Fresh</string>
     <string name="product_spoiled">Spoiled</string>
+    <string name="reconize_data_loading">Loading....</string>
 </resources>
