@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ffa800</color>
-    <color name="colorPrimaryDark">#ff6f00</color>
+    <color name="colorPrimary">#3399FF</color>
+    <color name="colorPrimaryDark">#339999</color>
     <color name="colorAccent">#425066</color>
 
     <color name="semi_transparent">#66FFFFFF</color>
@@ -9,5 +9,7 @@
     <color name="edibility_fresh">#6634C924</color>
     <color name="edibility_spoiled">#66900020</color>
     <color name="edibility_unknown">#66FFB02E</color>
+
+    <color name="colorLine">#425066</color>
 
 </resources>

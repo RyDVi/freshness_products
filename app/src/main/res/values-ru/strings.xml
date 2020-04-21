@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Съедобность продуктов</string>
+    <string name="camera_error">Данное устройство не поддерживает Camera2 API.</string>
+
+    <string name="title_product_list">Продукты</string>
+    <string name="title_product_detail">Детали продукта</string>
+    <string name="title_activity_main_menu">Главное меню</string>
+    <string name="beef_name">Мясо</string>
+    <string name="bread_name">Хлеб</string>
+    <string name="product_fresh">Свежий</string>
+    <string name="product_spoiled">Испорченный</string>
+    <string name="reconize_data_loading">Загрузка....</string>
+    <string name="menu_item_recognizer">Распознаватель свежести</string>
+    <string name="menu_item_products">Продукты</string>
+</resources>

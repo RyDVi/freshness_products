@@ -5,9 +5,9 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_recognizer"
-            android:title="Recognizer"></item>
+            android:title="@string/menu_item_recognizer"></item>
         <item
             android:id="@+id/nav_products"
-            android:title="Products"></item>
+            android:title="@string/menu_item_products"></item>
     </group>
 </menu>
