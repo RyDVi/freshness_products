@@ -22,23 +22,18 @@ import android.os.Trace;
 import android.util.Size;
 import android.view.Surface;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.rydvi.product.edibility.recognizer.R;
 import com.rydvi.product.edibility.recognizer.api.Product;
-import com.rydvi.product.edibility.recognizer.api.ProductType;
 import com.rydvi.product.edibility.recognizer.classifier.env.ImageUtils;
 import com.rydvi.product.edibility.recognizer.classifier.env.Logger;
 import com.rydvi.product.edibility.recognizer.classifier.tflite.Classifier.Recognition;
@@ -46,8 +41,6 @@ import com.rydvi.product.edibility.recognizer.consulting.ProductDetailActivity;
 
 import java.nio.ByteBuffer;
 import java.util.List;
-
-import static com.rydvi.product.edibility.recognizer.api.ProductType.findProductTypeByName;
 
 public abstract class CameraActivity extends AppCompatActivity
         implements OnImageAvailableListener,
