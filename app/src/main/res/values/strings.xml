@@ -7,9 +7,11 @@
     <string name="title_activity_main_menu">Main menu</string>
     <string name="beef_name">Beef</string>
     <string name="bread_name">Bread</string>
-    <string name="product_fresh">Fresh</string>
-    <string name="product_spoiled">Spoiled</string>
+    <string name="product_freshness_fresh">Fresh</string>
+    <string name="product_freshness_spoiled">Spoiled</string>
+    <string name="product_freshness_unknown">Unknown</string>
     <string name="reconize_data_loading">Loading....</string>
     <string name="menu_item_recognizer">Recognizer freshness</string>
     <string name="menu_item_products">Products</string>
+    <string name="product_unknown">Unknown product</string>
 </resources>

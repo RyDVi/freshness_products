@@ -8,9 +8,11 @@
     <string name="title_activity_main_menu">Главное меню</string>
     <string name="beef_name">Мясо</string>
     <string name="bread_name">Хлеб</string>
-    <string name="product_fresh">Свежий</string>
-    <string name="product_spoiled">Испорченный</string>
+    <string name="product_freshness_fresh">Свежий</string>
+    <string name="product_freshness_spoiled">Испорченный</string>
+    <string name="product_freshness_unknown">Неизвестно</string>
     <string name="reconize_data_loading">Загрузка....</string>
     <string name="menu_item_recognizer">Распознаватель свежести</string>
     <string name="menu_item_products">Продукты</string>
+    <string name="product_unknown">Неизвестный продукт</string>
 </resources>

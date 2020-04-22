@@ -22,7 +22,6 @@ import android.os.SystemClock;
 import android.os.Trace;
 
 import com.rydvi.product.edibility.recognizer.api.Product;
-import com.rydvi.product.edibility.recognizer.api.ProductType;
 import com.rydvi.product.edibility.recognizer.classifier.env.Logger;
 
 import org.tensorflow.lite.DataType;
@@ -126,8 +125,8 @@ public abstract class Classifier {
     private TensorProcessor probabilityProcessor;
 
 
-    public static ClassifierEdibility createEdibilityClassifier(Activity activity, Product product) throws IOException {
-        return new ClassifierEdibility(activity, Device.CPU, 1, product);
+    public static ClassifierFreshness createFreshnessClassifier(Activity activity) throws IOException {
+        return new ClassifierFreshness(activity, Device.CPU, 1);
     }
 
     public static ClassifierProducts createProductsClassifier(Activity activity) throws IOException {

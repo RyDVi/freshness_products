@@ -33,7 +33,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.rydvi.product.edibility.recognizer.R;
-import com.rydvi.product.edibility.recognizer.api.Product;
+import com.rydvi.product.edibility.recognizer.api.ProductFreshnessType;
+import com.rydvi.product.edibility.recognizer.api.ProductType;
 import com.rydvi.product.edibility.recognizer.classifier.env.ImageUtils;
 import com.rydvi.product.edibility.recognizer.classifier.env.Logger;
 import com.rydvi.product.edibility.recognizer.classifier.tflite.Classifier.Recognition;
@@ -41,6 +42,9 @@ import com.rydvi.product.edibility.recognizer.consulting.ProductDetailActivity;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+
+import static com.rydvi.product.edibility.recognizer.api.ProductFreshnessType.*;
+import static com.rydvi.product.edibility.recognizer.api.ProductFreshnessType.findFreshnessTypeByName;
 
 public abstract class CameraActivity extends AppCompatActivity
         implements OnImageAvailableListener,
@@ -64,11 +68,11 @@ public abstract class CameraActivity extends AppCompatActivity
     private Runnable postInferenceCallback;
     private Runnable imageConverter;
     private LinearLayout layoutEdibilityWindow;
-    protected TextView recognitionTextView,
-            recognition1TextView,
-            recognitionValueTextView,
-            recognition1ValueTextView;
-    protected Product findedProduct = null;
+    protected TextView recognitionProductTypeTextView,
+            recognitionFreshnessTextView,
+            recognitionProductValueTextView,
+            recognitionFreshnessValueTextView;
+    protected ProductType.EProductType findedProduct = null;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -90,10 +94,10 @@ public abstract class CameraActivity extends AppCompatActivity
 
         //Окно с данными о распознавании
         layoutEdibilityWindow = findViewById(R.id.layout_edibility_window);
-        recognitionTextView = findViewById(R.id.text_product);
-        recognitionValueTextView = findViewById(R.id.text_product_probability);
-        recognition1TextView = findViewById(R.id.text_edibility);
-        recognition1ValueTextView = findViewById(R.id.text_edibility_probability);
+        recognitionProductTypeTextView = findViewById(R.id.text_product);
+        recognitionProductValueTextView = findViewById(R.id.text_product_probability);
+        recognitionFreshnessTextView = findViewById(R.id.text_edibility);
+        recognitionFreshnessValueTextView = findViewById(R.id.text_edibility_probability);
 
         layoutEdibilityWindow.setOnClickListener(view -> {
             //Навигация к продукту, если он был найден.
@@ -101,7 +105,7 @@ public abstract class CameraActivity extends AppCompatActivity
             if (findedProduct != null) {
                 //Необходимо реализовать навигацию к ProductDetailActivity с ИД продукта
                 Intent intent = new Intent(this, ProductDetailActivity.class);
-                intent.putExtra(ProductDetailActivity.ARG_PRODUCT_ID, findedProduct.getId());
+                intent.putExtra(ProductDetailActivity.ARG_PRODUCT_ID, findedProduct);
                 startActivity(intent);
             }
         });
@@ -402,38 +406,45 @@ public abstract class CameraActivity extends AppCompatActivity
     @UiThread
     protected void showResultsInWindow(List<Recognition> resultsClassifierProducts,
                                        List<Recognition> resultsClassifierEdibility) {
-        if (resultsClassifierProducts != null && resultsClassifierProducts.size() >= 1) {
-            Recognition recognitionProduct = resultsClassifierProducts.get(0);
-            if (recognitionProduct != null) {
-                if (recognitionProduct.getTitle() != null) {
-                    recognitionTextView.setText((findedProduct != null) ?
-                            findedProduct.getNameLocal() : recognitionProduct.getTitle());
+        if (!findedProduct.equals(ProductType.EProductType.ANOTHER)) {
+            if (resultsClassifierProducts != null && resultsClassifierProducts.size() >= 1) {
+                Recognition recognitionProduct = resultsClassifierProducts.get(0);
+                if (recognitionProduct != null) {
+                    if (recognitionProduct.getTitle() != null) {
+                        recognitionProductTypeTextView.setText((findedProduct != null) ?
+                                findedProduct.getTranlatedName(this) : recognitionProduct.getTitle());
 
-                }
-                if (recognitionProduct.getConfidence() != null)
-                    recognitionValueTextView.setText(
-                            String.format("%.2f", (100 * recognitionProduct.getConfidence())) + "%");
-            }
-        }
-        if (resultsClassifierEdibility != null && resultsClassifierProducts.size() >= 1) {
-            Recognition recognitionEdibility = resultsClassifierEdibility.get(0);
-            if (recognitionEdibility != null) {
-                if (recognitionEdibility.getTitle() != null)
-                    //Подбираем текст под свежий/испорченный
-                    recognition1TextView.setText(recognitionEdibility.getTitle().equalsIgnoreCase("fresh") ?
-                            getString(R.string.product_fresh) : getString(R.string.product_spoiled));
-                if (recognitionEdibility.getConfidence() != null) {
-                    float edibilityProbability = 100 * recognitionEdibility.getConfidence();
-                    //Установка цвета
-                    if (recognitionEdibility.getTitle().equalsIgnoreCase("fresh")) {
-                        layoutEdibilityWindow.setBackground(getResources().getDrawable(R.drawable.rectangle_rounded_freshed, null));
-                    } else {
-                        layoutEdibilityWindow.setBackground(getResources().getDrawable(R.drawable.rectangle_rounded_spoiled, null));
                     }
-                    recognition1ValueTextView.setText(
-                            String.format("%.2f", edibilityProbability) + "%");
+                    if (recognitionProduct.getConfidence() != null)
+                        recognitionProductValueTextView.setText(
+                                String.format("%.2f", (100 * recognitionProduct.getConfidence())) + "%");
                 }
             }
+            if (resultsClassifierEdibility != null && resultsClassifierProducts.size() >= 1) {
+                Recognition recognitionEdibility = resultsClassifierEdibility.get(0);
+                if (recognitionEdibility != null) {
+                    if (recognitionEdibility.getTitle() != null) {
+                        final EProductFreshnessType freshnessType =
+                                findFreshnessTypeByName(recognitionEdibility.getTitle());
+                        recognitionFreshnessTextView.setText(freshnessType.getTranlatedName(this));
+                        layoutEdibilityWindow.setBackground(freshnessType.getBackgroundDrawable(this));
+                        if(!freshnessType.equals(EProductFreshnessType.ANOTHER)){
+                            float freshnessProbability = 100 * recognitionEdibility.getConfidence();
+                            recognitionFreshnessValueTextView.setText(
+                                String.format("%.2f", freshnessProbability) + "%");
+                        } else {
+                            recognitionFreshnessValueTextView.setText("");
+                        }
+                    }
+                }
+            }
+        } else {
+            //Если продукт был опознан как another (другое, неизвестный продукт)
+            recognitionProductTypeTextView.setText(getResources().getString(R.string.product_unknown));
+            recognitionProductValueTextView.setText("");
+            recognitionFreshnessTextView.setText("");
+            recognitionFreshnessValueTextView.setText("");
+            layoutEdibilityWindow.setBackground(getResources().getDrawable(R.drawable.rectangle_rounded_unknown, null));
         }
     }
 

@@ -1,34 +1,22 @@
 package com.rydvi.product.edibility.recognizer.classifier;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Typeface;
 import android.media.ImageReader.OnImageAvailableListener;
-import android.os.Build;
 import android.util.Size;
 import android.util.TypedValue;
 
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-
 import com.rydvi.product.edibility.recognizer.R;
-import com.rydvi.product.edibility.recognizer.api.Product;
 import com.rydvi.product.edibility.recognizer.api.ProductType;
-import com.rydvi.product.edibility.recognizer.api.ProductsViewModel;
 import com.rydvi.product.edibility.recognizer.classifier.env.BorderedText;
 import com.rydvi.product.edibility.recognizer.classifier.env.Logger;
 import com.rydvi.product.edibility.recognizer.classifier.tflite.Classifier;
-import com.rydvi.product.edibility.recognizer.classifier.tflite.ClassifierEdibility;
+import com.rydvi.product.edibility.recognizer.classifier.tflite.ClassifierFreshness;
 import com.rydvi.product.edibility.recognizer.classifier.tflite.ClassifierProducts;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
-import static com.rydvi.product.edibility.recognizer.api.ProductType.findProductTypeByName;
 
 public class ClassifierActivity extends CameraActivity implements OnImageAvailableListener {
     private static final Logger LOGGER = new Logger();
@@ -37,8 +25,7 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
     private Bitmap rgbFrameBitmap = null;
     private Integer sensorOrientation;
     private ClassifierProducts classifierProducts;
-    private Map<Product, ClassifierEdibility> edibilityClassifiers;
-    private ProductsViewModel productsViewModel;
+    private ClassifierFreshness classifierFreshness;
     private BorderedText borderedText;
 
     @Override
@@ -60,31 +47,22 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
         borderedText = new BorderedText(textSizePx);
         borderedText.setTypeface(Typeface.MONOSPACE);
 
-        productsViewModel = ViewModelProviders.of(this).get(ProductsViewModel.class);
-        Activity that = this;
-        productsViewModel.getProducts().observe(this, products -> {
-            //Чтобы не пересоздавать классификаторы
-            if (classifierProducts == null) {
-                try {
-                    edibilityClassifiers = new HashMap<>();
-                    //Создание классификаторов
-                    for (Product product : products) {
-                        //Создаем map классификаторов для определения съедобности продуктов.
-                        //Создаем сразу, чтобы не пересоздавать при определении съедобности.
-                        edibilityClassifiers.put(product, Classifier.createEdibilityClassifier(that, product));
-                    }
-                    //Создаем классификатор продуктов
-                    classifierProducts = Classifier.createProductsClassifier(that);
-                    if (classifierProducts == null) {
-                        LOGGER.e("No classifier on preview!");
-                        return;
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        productsViewModel.refreshProducts();
+        try {
+            classifierProducts = Classifier.createProductsClassifier(this);
+            classifierFreshness = Classifier.createFreshnessClassifier(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (classifierProducts == null) {
+            LOGGER.e("No products classifier on preview!");
+            return;
+        }
+
+        if (classifierFreshness == null) {
+            LOGGER.e("No freshness classifier on preview!");
+            return;
+        }
 
         previewWidth = size.getWidth();
         previewHeight = size.getHeight();
@@ -104,29 +82,20 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
             if (classifierProducts != null) {
                 final List<Classifier.Recognition> resultsClassifierProducts =
                         classifierProducts.recognizeImage(rgbFrameBitmap, sensorOrientation);
-                findedProduct = null;
-                //Определяем, какой классификатор использовать
-                List<Classifier.Recognition> resultsClassifierEdibility = null;
-                //Определяем, есть ли результат от классификации продуктов
-                if (resultsClassifierProducts.size() >= 1) {
-                    Classifier.Recognition recognition = resultsClassifierProducts.get(0);
-                    if (recognition != null) {
-                        for (Map.Entry<Product, ClassifierEdibility> entryEdibilityClassifier :
-                                edibilityClassifiers.entrySet()) {
-                            //Ищем классификатор свежести по имени продукта и запускаем распознавание
-                            if (entryEdibilityClassifier.getKey().getName()
-                                    .equalsIgnoreCase(recognition.getTitle())) {
-                                findedProduct = entryEdibilityClassifier.getKey();
-                                resultsClassifierEdibility = entryEdibilityClassifier.getValue()
-                                        .recognizeImage(rgbFrameBitmap, sensorOrientation);
-                                break;
-                            }
-                        }
+                final List<Classifier.Recognition> resultsClassifierFreshness =
+                        classifierFreshness.recognizeImage(rgbFrameBitmap, sensorOrientation);
+
+                //Запись найденного продукта
+                if (resultsClassifierProducts != null && resultsClassifierProducts.size() >= 1) {
+                    Classifier.Recognition recognitionProduct = resultsClassifierProducts.get(0);
+                    if (recognitionProduct != null) {
+                        findedProduct = ProductType.findProductTypeByName(recognitionProduct.getTitle());
                     }
+                } else {
+                    findedProduct = null;
                 }
-                //Без этого не передаст параметры в функцию (вызывает ошибку)
-                final List<Classifier.Recognition> finalResultsClassifierEdibility = resultsClassifierEdibility;
-                runOnUiThread(() -> showResultsInWindow(resultsClassifierProducts, finalResultsClassifierEdibility));
+
+                runOnUiThread(() -> showResultsInWindow(resultsClassifierProducts, resultsClassifierFreshness));
             }
             readyForNextImage();
         });

@@ -2,16 +2,13 @@ package com.rydvi.product.edibility.recognizer.classifier.tflite;
 
 import android.app.Activity;
 
-import com.rydvi.product.edibility.recognizer.api.Product;
-import com.rydvi.product.edibility.recognizer.api.ProductType;
-
 import org.tensorflow.lite.support.common.TensorOperator;
 import org.tensorflow.lite.support.common.ops.NormalizeOp;
 
 import java.io.IOException;
 
 /** This TensorFlowLite classifier works with the float MobileNet model. */
-public class ClassifierFloatMobileNet extends Classifier {
+public abstract class ClassifierFloatMobileNet extends Classifier {
 
   /** Float MobileNet requires additional normalization of the used input. */
   private static final float IMAGE_MEAN = 127.5f;
@@ -34,20 +31,6 @@ public class ClassifierFloatMobileNet extends Classifier {
   public ClassifierFloatMobileNet(Activity activity, Device device, int numThreads)
       throws IOException {
     super(activity, device, numThreads);
-  }
-
-  protected ClassifierFloatMobileNet(Activity activity, Device device, int numThreads, Product product) throws IOException {
-    super(activity, device, numThreads, product);
-  }
-
-  @Override
-  protected String getModelPath() {
-    return "mobilenet_v1_1.0_224.tflite";
-  }
-
-  @Override
-  protected String getLabelPath() {
-    return "labels.txt";
   }
 
   @Override
