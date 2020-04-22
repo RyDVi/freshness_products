@@ -11,6 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.navigation.NavigationView;
 import com.rydvi.product.edibility.recognizer.classifier.ClassifierActivity;
 import com.rydvi.product.edibility.recognizer.consulting.ProductListActivity;
+import com.rydvi.product.edibility.recognizer.guide.GuideListActivity;
 
 public class MainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -38,16 +39,20 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        Intent intent;
+        Intent intent = null;
         switch (menuItem.getItemId()) {
             case R.id.nav_recognizer:
                 intent = new Intent(this, ClassifierActivity.class);
-                startActivity(intent);
                 break;
             case R.id.nav_products:
                 intent = new Intent(this, ProductListActivity.class);
-                startActivity(intent);
                 break;
+            case R.id.nav_guides:
+                intent = new Intent(this, GuideListActivity.class);
+                break;
+        }
+        if (intent != null) {
+            startActivity(intent);
         }
         return false;
     }

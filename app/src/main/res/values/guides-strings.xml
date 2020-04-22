@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_guide_list">Guides</string>
+    <string name="title_guide_detail">Guide Detail</string>
+    <string name="menu_item_guides">Guides</string>
+</resources>
