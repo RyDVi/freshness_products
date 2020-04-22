@@ -5,7 +5,7 @@
 
     <string name="title_product_list">Продукты</string>
     <string name="title_product_detail">Детали продукта</string>
-    <string name="title_activity_main_menu">Главное меню</string>
+    <string name="title_activity_main_menu">Определитель свежести</string>
     <string name="beef_name">Мясо</string>
     <string name="bread_name">Хлеб</string>
     <string name="product_freshness_fresh">Свежий</string>
@@ -16,4 +16,5 @@
     <string name="menu_item_products">Продукты</string>
     <string name="product_unknown">Неизвестный продукт</string>
     <string name="go_to_product">Нажмите для перехода к продукту</string>
+    <string name="activity_name_classification">Определитель свежести</string>
 </resources>
