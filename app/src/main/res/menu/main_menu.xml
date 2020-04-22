@@ -12,5 +12,8 @@
         <item
             android:id="@+id/nav_guides"
             android:title="@string/menu_item_guides"></item>
+        <item
+            android:id="@+id/nav_exit"
+            android:title="@string/menu_item_exit"></item>
     </group>
 </menu>

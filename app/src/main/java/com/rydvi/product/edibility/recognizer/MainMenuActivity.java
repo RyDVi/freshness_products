@@ -23,18 +23,8 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        _setupNavView();
-    }
-
-    private void _setupNavView() {
         NavigationView navView = findViewById(R.id.nav_view);
         navView.setNavigationItemSelectedListener(this);
-
-        MenuItem navRecognierMenuItem = navView.getMenu().findItem(R.id.nav_recognizer);
-        navRecognierMenuItem.setTitle(R.string.menu_item_recognizer);
-
-        MenuItem navProductsMenuItem = navView.getMenu().findItem(R.id.nav_products);
-        navProductsMenuItem.setTitle(R.string.menu_item_products);
     }
 
     @Override
@@ -49,6 +39,10 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
                 break;
             case R.id.nav_guides:
                 intent = new Intent(this, GuideListActivity.class);
+                break;
+            case R.id.nav_exit:
+                finish();
+                System.exit(0);
                 break;
         }
         if (intent != null) {

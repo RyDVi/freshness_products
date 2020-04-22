@@ -13,4 +13,5 @@
     <string name="product_freshness_fresh">Fresh</string>
     <string name="product_freshness_spoiled">Spoiled</string>
     <string name="product_freshness_unknown">Unknown</string>
+    <string name="menu_item_exit">Exit</string>
 </resources>
