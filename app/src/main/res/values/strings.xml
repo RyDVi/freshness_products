@@ -14,4 +14,5 @@
     <string name="menu_item_recognizer">Recognizer freshness</string>
     <string name="menu_item_products">Products</string>
     <string name="product_unknown">Unknown product</string>
+    <string name="go_to_product">Click me for go to product</string>
 </resources>

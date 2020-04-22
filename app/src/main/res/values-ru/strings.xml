@@ -15,4 +15,5 @@
     <string name="menu_item_recognizer">Распознаватель свежести</string>
     <string name="menu_item_products">Продукты</string>
     <string name="product_unknown">Неизвестный продукт</string>
+    <string name="go_to_product">Нажмите для перехода к продукту</string>
 </resources>

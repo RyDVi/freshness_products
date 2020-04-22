@@ -7,7 +7,7 @@
     <color name="semi_transparent">#66FFFFFF</color>
 
     <color name="edibility_fresh">#6634C924</color>
-    <color name="edibility_spoiled">#66900020</color>
+    <color name="edibility_spoiled">#66FF0033</color>
     <color name="edibility_unknown">#66FFB02E</color>
 
     <color name="colorLine">#425066</color>

@@ -34,6 +34,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.rydvi.product.edibility.recognizer.R;
 import com.rydvi.product.edibility.recognizer.api.ProductType;
+import com.rydvi.product.edibility.recognizer.api.ProductType.EProductType;
 import com.rydvi.product.edibility.recognizer.classifier.env.ImageUtils;
 import com.rydvi.product.edibility.recognizer.classifier.env.Logger;
 import com.rydvi.product.edibility.recognizer.classifier.tflite.Classifier.Recognition;
@@ -70,8 +71,9 @@ public abstract class CameraActivity extends AppCompatActivity
     protected TextView recognitionProductTypeTextView,
             recognitionFreshnessTextView,
             recognitionProductValueTextView,
-            recognitionFreshnessValueTextView;
-    protected ProductType.EProductType findedProduct = null;
+            recognitionFreshnessValueTextView,
+            clickForGoToProductTextView;
+    protected EProductType findedProduct = null;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -97,14 +99,17 @@ public abstract class CameraActivity extends AppCompatActivity
         recognitionProductValueTextView = findViewById(R.id.text_product_probability);
         recognitionFreshnessTextView = findViewById(R.id.text_edibility);
         recognitionFreshnessValueTextView = findViewById(R.id.text_edibility_probability);
+        clickForGoToProductTextView = findViewById(R.id.text_click_for_go_product);
+        clickForGoToProductTextView.setVisibility(TextView.GONE);
 
         layoutEdibilityWindow.setOnClickListener(view -> {
             //Навигация к продукту, если он был найден.
             //Наденный продукт хранится в переменной findedProduct
-            if (findedProduct != null) {
+            //Навигация не происходит, если найденный продукт - another
+            if (findedProduct != null && !findedProduct.equals(EProductType.ANOTHER)) {
                 //Необходимо реализовать навигацию к ProductDetailActivity с ИД продукта
                 Intent intent = new Intent(this, ProductDetailActivity.class);
-                intent.putExtra(ProductDetailActivity.ARG_PRODUCT_ID, findedProduct);
+                intent.putExtra(ProductDetailActivity.ARG_PRODUCT_ID, findedProduct.getName());
                 startActivity(intent);
             }
         });
@@ -405,7 +410,8 @@ public abstract class CameraActivity extends AppCompatActivity
     @UiThread
     protected void showResultsInWindow(List<Recognition> resultsClassifierProducts,
                                        List<Recognition> resultsClassifierEdibility) {
-        if (!findedProduct.equals(ProductType.EProductType.ANOTHER)) {
+        if (findedProduct!=null && !findedProduct.equals(EProductType.ANOTHER)) {
+            clickForGoToProductTextView.setVisibility(TextView.VISIBLE);
             if (resultsClassifierProducts != null && resultsClassifierProducts.size() >= 1) {
                 Recognition recognitionProduct = resultsClassifierProducts.get(0);
                 if (recognitionProduct != null) {
@@ -444,6 +450,7 @@ public abstract class CameraActivity extends AppCompatActivity
             recognitionFreshnessTextView.setText("");
             recognitionFreshnessValueTextView.setText("");
             layoutEdibilityWindow.setBackground(getResources().getDrawable(R.drawable.rectangle_rounded_unknown, null));
+            clickForGoToProductTextView.setVisibility(TextView.GONE);
         }
     }
 
