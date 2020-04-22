@@ -1,6 +1,7 @@
 package com.rydvi.product.edibility.recognizer.consulting;
 
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,7 @@ public class ProductDetailFragment extends Fragment {
             if (appBarLayout != null) {
                 appBarLayout.setTitle(detailProduct.getTranlatedName(getContext()));
             }
-            textProductConsulting.setText(detailProduct.getConsultingText(getContext()));
+            textProductConsulting.setText(detailProduct.getConsultingHtml(getContext()));
         }
 
         return rootView;

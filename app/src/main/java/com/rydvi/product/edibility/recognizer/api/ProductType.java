@@ -2,12 +2,15 @@ package com.rydvi.product.edibility.recognizer.api;
 
 
 import android.content.Context;
+import android.text.Html;
+import android.text.Spanned;
 
 import com.rydvi.product.edibility.recognizer.R;
 
 public final class ProductType {
     /**
      * Ищет тим продукта по имени продукта из меток
+     *
      * @param name - имя продукта из меток в product_recognier_labels.txt
      * @return - тип продукта
      */
@@ -22,8 +25,6 @@ public final class ProductType {
 
     public enum EProductType {
         BEEF {
-
-
             @Override
             public String getName() {
                 return "beef";
@@ -36,8 +37,8 @@ public final class ProductType {
             }
 
             @Override
-            public String getConsultingText(Context context) {
-                return "Temp about beef";
+            public Spanned getConsultingHtml(Context context) {
+                return Html.fromHtml(context.getText(R.string.beef_consulting).toString());
             }
 
         },
@@ -53,8 +54,8 @@ public final class ProductType {
             }
 
             @Override
-            public String getConsultingText(Context context) {
-                return "Temp about bread";
+            public Spanned getConsultingHtml(Context context) {
+                return null;
             }
         },
         ANOTHER {
@@ -69,7 +70,7 @@ public final class ProductType {
             }
 
             @Override
-            public String getConsultingText(Context context) {
+            public Spanned getConsultingHtml(Context context) {
                 return null;
             }
         };
@@ -78,7 +79,7 @@ public final class ProductType {
 
         public abstract String getTranlatedName(Context context);
 
-        public abstract String getConsultingText(Context context);
+        public abstract Spanned getConsultingHtml(Context context);
     }
 }
 

@@ -6,8 +6,6 @@
     <string name="title_product_list">Продукты</string>
     <string name="title_product_detail">Детали продукта</string>
     <string name="title_activity_main_menu">Определитель свежести</string>
-    <string name="beef_name">Мясо</string>
-    <string name="bread_name">Хлеб</string>
     <string name="product_freshness_fresh">Свежий</string>
     <string name="product_freshness_spoiled">Испорченный</string>
     <string name="product_freshness_unknown">Неизвестно</string>
