@@ -1,29 +1,24 @@
 package com.rydvi.product.edibility.recognizer.consulting;
 
-import android.app.Activity;
 import android.os.Bundle;
-
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.rydvi.product.edibility.recognizer.R;
-import com.rydvi.product.edibility.recognizer.api.Product;
-import com.rydvi.product.edibility.recognizer.api.ProductsViewModel;
+
+import static com.rydvi.product.edibility.recognizer.api.ProductType.EProductType;
+import static com.rydvi.product.edibility.recognizer.api.ProductType.findProductTypeByName;
 
 
 public class ProductDetailFragment extends Fragment {
 
     public static final String ARG_PRODUCT_ID = "product_id";
-    private ProductsViewModel productsViewModel = null;
-    private Product detailProduct;
+    private EProductType detailProduct;
     private TextView textProductConsulting;
 
     public ProductDetailFragment() {
@@ -42,24 +37,14 @@ public class ProductDetailFragment extends Fragment {
 
         textProductConsulting = rootView.findViewById(R.id.product_detail);
 
-        productsViewModel = ViewModelProviders.of(this).get(ProductsViewModel.class);
         CollapsingToolbarLayout appBarLayout = getActivity().findViewById(R.id.toolbar_layout);
-        productsViewModel.getProducts().observe(getViewLifecycleOwner(), products -> {
-            if (getArguments().containsKey(ARG_PRODUCT_ID)) {
-                int productId = getArguments().getInt(ARG_PRODUCT_ID, 0);
-                for (Product product : products) {
-                    if (product.getId().equals(productId)) {
-                        detailProduct = product;
-                        if (appBarLayout != null) {
-                            appBarLayout.setTitle(detailProduct.getNameLocal());
-                        }
-                        textProductConsulting.setText(product.getConsulting());
-                        break;
-                    }
-                }
+        if (getArguments().containsKey(ARG_PRODUCT_ID)) {
+            detailProduct = findProductTypeByName(getArguments().getString(ARG_PRODUCT_ID));
+            if (appBarLayout != null) {
+                appBarLayout.setTitle(detailProduct.getTranlatedName(getContext()));
             }
-        });
-        productsViewModel.refreshProducts();
+            textProductConsulting.setText(detailProduct.getConsultingText(getContext()));
+        }
 
         return rootView;
     }

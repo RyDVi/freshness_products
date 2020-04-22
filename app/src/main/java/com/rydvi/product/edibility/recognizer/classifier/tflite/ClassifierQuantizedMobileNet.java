@@ -16,10 +16,11 @@ limitations under the License.
 package com.rydvi.product.edibility.recognizer.classifier.tflite;
 
 import android.app.Activity;
-import java.io.IOException;
-import com.rydvi.product.edibility.recognizer.classifier.tflite.Classifier.Device;
+
 import org.tensorflow.lite.support.common.TensorOperator;
 import org.tensorflow.lite.support.common.ops.NormalizeOp;
+
+import java.io.IOException;
 
 /** This TensorFlow Lite classifier works with the quantized MobileNet model. */
 public class ClassifierQuantizedMobileNet extends Classifier {

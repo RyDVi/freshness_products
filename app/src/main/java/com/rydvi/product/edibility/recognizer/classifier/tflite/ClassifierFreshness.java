@@ -2,9 +2,6 @@ package com.rydvi.product.edibility.recognizer.classifier.tflite;
 
 import android.app.Activity;
 
-import com.rydvi.product.edibility.recognizer.api.Product;
-import com.rydvi.product.edibility.recognizer.api.ProductType;
-
 import java.io.IOException;
 
 public class ClassifierFreshness extends ClassifierFloatMobileNet {

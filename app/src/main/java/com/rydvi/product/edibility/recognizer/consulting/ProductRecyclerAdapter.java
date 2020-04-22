@@ -11,17 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rydvi.product.edibility.recognizer.R;
-import com.rydvi.product.edibility.recognizer.api.Product;
 
 import java.util.List;
+
+import static com.rydvi.product.edibility.recognizer.api.ProductType.EProductType;
 
 public class ProductRecyclerAdapter extends RecyclerView.Adapter<ProductRecyclerAdapter.ViewHolder>
         implements View.OnClickListener {
 
     private Activity parentActivity;
-    private List<Product> products;
+    private List<EProductType> products;
 
-    public ProductRecyclerAdapter(Activity parentActivity, List<Product> products) {
+    public ProductRecyclerAdapter(Activity parentActivity, List<EProductType> products) {
         this.parentActivity = parentActivity;
         this.products = products;
     }
@@ -36,8 +37,8 @@ public class ProductRecyclerAdapter extends RecyclerView.Adapter<ProductRecycler
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Product product = products.get(position);
-        holder.mProductNameView.setText(product.getNameLocal());
+        EProductType product = products.get(position);
+        holder.mProductNameView.setText(product.getTranlatedName(parentActivity));
 
         holder.itemView.setTag(product);
         holder.itemView.setOnClickListener(this);
@@ -50,13 +51,13 @@ public class ProductRecyclerAdapter extends RecyclerView.Adapter<ProductRecycler
 
     @Override
     public void onClick(View view) {
-        Product product = (Product) view.getTag();
+        EProductType product = (EProductType) view.getTag();
         Intent intent = new Intent(parentActivity, ProductDetailActivity.class);
-        intent.putExtra(ProductDetailActivity.ARG_PRODUCT_ID, product.getId());
+        intent.putExtra(ProductDetailActivity.ARG_PRODUCT_ID, product.getName());
         parentActivity.startActivity(intent);
     }
 
-    void refreshProducts(List<Product> products) {
+    void refreshProducts(List<EProductType> products) {
         this.products = products;
         notifyDataSetChanged();
     }

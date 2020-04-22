@@ -31,14 +31,14 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import java.io.IOException;
-import java.util.List;
 
+import com.rydvi.product.edibility.recognizer.R;
 import com.rydvi.product.edibility.recognizer.classifier.customview.AutoFitTextureView;
 import com.rydvi.product.edibility.recognizer.classifier.env.ImageUtils;
 import com.rydvi.product.edibility.recognizer.classifier.env.Logger;
 
-import com.rydvi.product.edibility.recognizer.R;
+import java.io.IOException;
+import java.util.List;
 
 @SuppressLint("ValidFragment")
 public class LegacyCameraConnectionFragment extends Fragment {

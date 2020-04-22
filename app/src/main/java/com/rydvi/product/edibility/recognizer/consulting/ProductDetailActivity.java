@@ -28,8 +28,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         }
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
-            arguments.putInt(ProductDetailFragment.ARG_PRODUCT_ID,
-                    getIntent().getIntExtra(ARG_PRODUCT_ID, 0));
+            arguments.putString(ProductDetailFragment.ARG_PRODUCT_ID,
+                    getIntent().getStringExtra(ARG_PRODUCT_ID));
             ProductDetailFragment fragment = new ProductDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()

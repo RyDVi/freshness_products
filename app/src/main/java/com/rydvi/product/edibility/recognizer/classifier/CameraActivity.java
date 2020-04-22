@@ -33,7 +33,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.rydvi.product.edibility.recognizer.R;
-import com.rydvi.product.edibility.recognizer.api.ProductFreshnessType;
 import com.rydvi.product.edibility.recognizer.api.ProductType;
 import com.rydvi.product.edibility.recognizer.classifier.env.ImageUtils;
 import com.rydvi.product.edibility.recognizer.classifier.env.Logger;
@@ -43,7 +42,7 @@ import com.rydvi.product.edibility.recognizer.consulting.ProductDetailActivity;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-import static com.rydvi.product.edibility.recognizer.api.ProductFreshnessType.*;
+import static com.rydvi.product.edibility.recognizer.api.ProductFreshnessType.EProductFreshnessType;
 import static com.rydvi.product.edibility.recognizer.api.ProductFreshnessType.findFreshnessTypeByName;
 
 public abstract class CameraActivity extends AppCompatActivity

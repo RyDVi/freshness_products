@@ -21,7 +21,6 @@ import android.graphics.RectF;
 import android.os.SystemClock;
 import android.os.Trace;
 
-import com.rydvi.product.edibility.recognizer.api.Product;
 import com.rydvi.product.edibility.recognizer.classifier.env.Logger;
 
 import org.tensorflow.lite.DataType;
@@ -53,7 +52,6 @@ import java.util.PriorityQueue;
  */
 public abstract class Classifier {
     private static final Logger LOGGER = new Logger();
-    protected Product product;
 
     /**
      * The runtime device type used for executing classification.
@@ -215,11 +213,6 @@ public abstract class Classifier {
      * Initializes a {@code Classifier}.
      */
     protected Classifier(Activity activity, Device device, int numThreads) throws IOException {
-        _classifierConstructor(activity, device, numThreads);
-    }
-
-    protected Classifier(Activity activity, Device device, int numThreads, Product product) throws IOException {
-        this.product = product;
         _classifierConstructor(activity, device, numThreads);
     }
 

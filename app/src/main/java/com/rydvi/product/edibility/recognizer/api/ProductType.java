@@ -5,10 +5,6 @@ import android.content.Context;
 
 import com.rydvi.product.edibility.recognizer.R;
 
-import static com.rydvi.product.edibility.recognizer.api.ProductType.EProductType.ANOTHER;
-import static com.rydvi.product.edibility.recognizer.api.ProductType.EProductType.BEEF;
-import static com.rydvi.product.edibility.recognizer.api.ProductType.EProductType.BREAD;
-
 public final class ProductType {
     /**
      * Ищет тим продукта по имени продукта из меток
@@ -26,6 +22,8 @@ public final class ProductType {
 
     public enum EProductType {
         BEEF {
+
+
             @Override
             public String getName() {
                 return "beef";
@@ -39,7 +37,7 @@ public final class ProductType {
 
             @Override
             public String getConsultingText(Context context) {
-                return null;
+                return "Temp about beef";
             }
 
         },
@@ -56,7 +54,7 @@ public final class ProductType {
 
             @Override
             public String getConsultingText(Context context) {
-                return null;
+                return "Temp about bread";
             }
         },
         ANOTHER {
@@ -67,7 +65,7 @@ public final class ProductType {
 
             @Override
             public String getTranlatedName(Context context) {
-                return "";
+                return null;
             }
 
             @Override

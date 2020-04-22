@@ -3,14 +3,12 @@ package com.rydvi.product.edibility.recognizer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.navigation.NavigationView;
-import com.rydvi.product.edibility.recognizer.api.DataRepo;
 import com.rydvi.product.edibility.recognizer.classifier.ClassifierActivity;
 import com.rydvi.product.edibility.recognizer.consulting.ProductListActivity;
 
@@ -20,12 +18,11 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-        DataRepo.getInstance().setContext(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        NavigationView navView =  findViewById(R.id.nav_view);
+        NavigationView navView = findViewById(R.id.nav_view);
         navView.setNavigationItemSelectedListener(this);
     }
 

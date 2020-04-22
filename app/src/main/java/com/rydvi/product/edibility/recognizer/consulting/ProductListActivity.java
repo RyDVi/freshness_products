@@ -5,14 +5,14 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rydvi.product.edibility.recognizer.R;
-import com.rydvi.product.edibility.recognizer.api.Product;
-import com.rydvi.product.edibility.recognizer.api.ProductsViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.rydvi.product.edibility.recognizer.api.ProductType.EProductType;
 
 
 public class ProductListActivity extends AppCompatActivity {
@@ -22,7 +22,6 @@ public class ProductListActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
-    private ProductsViewModel productsViewModel;
     private RecyclerView recyclerView;
 
     @Override
@@ -40,18 +39,21 @@ public class ProductListActivity extends AppCompatActivity {
         if (findViewById(R.id.product_detail_container) != null) {
             mTwoPane = true;
         }
-        productsViewModel = ViewModelProviders.of(this).get(ProductsViewModel.class);
-        productsViewModel.getProducts().observe(this, products -> {
-            if (recyclerView.getAdapter() == null) {
-                setupRecyclerView(recyclerView, products);
-            } else {
-                ((ProductRecyclerAdapter) recyclerView.getAdapter()).refreshProducts(products);
+        //Добавляем все типы продуктов, кроме ANOTHER
+        List<EProductType> productTypes = new ArrayList<>();
+        for (EProductType productType : EProductType.values()) {
+            if (!productType.equals(EProductType.ANOTHER)) {
+                productTypes.add(productType);
             }
-        });
-        productsViewModel.refreshProducts();
+        }
+        if (recyclerView.getAdapter() == null) {
+            setupRecyclerView(recyclerView, productTypes);
+        } else {
+            ((ProductRecyclerAdapter) recyclerView.getAdapter()).refreshProducts(productTypes);
+        }
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Product> products) {
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<EProductType> products) {
         recyclerView.setAdapter(new ProductRecyclerAdapter(this, products));
     }
 }
