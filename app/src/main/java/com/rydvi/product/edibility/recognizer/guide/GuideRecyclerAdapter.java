@@ -13,19 +13,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rydvi.product.edibility.recognizer.R;
+import com.rydvi.product.edibility.recognizer.api.Type;
 
 import java.util.List;
-
-import static com.rydvi.product.edibility.recognizer.api.GuideType.EGuideType;
 
 public class GuideRecyclerAdapter extends RecyclerView.Adapter<GuideRecyclerAdapter.ViewHolder>
         implements View.OnClickListener {
 
     private AppCompatActivity mParentActivity;
-    private List<EGuideType> mGuides;
+    private List<Type> mGuides;
     private boolean mTwoPane;
 
-    public GuideRecyclerAdapter(AppCompatActivity parentActivity, List<EGuideType> guides, boolean twoPane) {
+    public GuideRecyclerAdapter(AppCompatActivity parentActivity, List<Type> guides, boolean twoPane) {
         this.mParentActivity = parentActivity;
         this.mGuides = guides;
         this.mTwoPane = twoPane;
@@ -41,7 +40,7 @@ public class GuideRecyclerAdapter extends RecyclerView.Adapter<GuideRecyclerAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        EGuideType guide = mGuides.get(position);
+        Type guide = mGuides.get(position);
         holder.mGuideNameView.setText(guide.getTranlatedName(mParentActivity));
 
         holder.itemView.setTag(guide);
@@ -55,7 +54,7 @@ public class GuideRecyclerAdapter extends RecyclerView.Adapter<GuideRecyclerAdap
 
     @Override
     public void onClick(View view) {
-        EGuideType guide = (EGuideType) view.getTag();
+        Type guide = (Type) view.getTag();
         if (mTwoPane) {
             Bundle arguments = new Bundle();
             arguments.putString(GuideDetailFragment.ARG_GUIDE_ID, guide.getName());
@@ -73,7 +72,7 @@ public class GuideRecyclerAdapter extends RecyclerView.Adapter<GuideRecyclerAdap
         }
     }
 
-    void refreshGuides(List<EGuideType> guides) {
+    void refreshGuides(List<Type> guides) {
         this.mGuides = guides;
         notifyDataSetChanged();
     }

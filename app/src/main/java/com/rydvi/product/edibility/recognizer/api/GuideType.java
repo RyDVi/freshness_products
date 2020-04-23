@@ -1,50 +1,43 @@
 package com.rydvi.product.edibility.recognizer.api;
 
 import android.content.Context;
-import android.text.Spanned;
 
-public final class GuideType {
-    /**
-     * Ищет тим продукта по имени продукта из меток
-     *
-     * @param name - имя гайда
-     * @return - тип гайда
-     */
-    public static EGuideType findGuideTypeByName(String name) {
-        for (EGuideType guideType : EGuideType.values()) {
-            if (name.equalsIgnoreCase(guideType.getName())) {
-                return guideType;
-            }
+import com.rydvi.product.edibility.recognizer.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class GuideType extends TypeContainer{
+    static final GuideType guideType = new GuideType();
+    static final Type TEST_GUIDE = new Type() {
+        @Override
+        public String getName() {
+            return "test_guide";
         }
-        return null;
+
+        @Override
+        public String getTranlatedName(Context context) {
+            return context.getString(R.string.guide_testing_name);
+        }
+
+        @Override
+        public String getHtmlPath() {
+            return "file:///android_asset/pages/guides/testing_guide.html";
+        }
+    };
+
+    @Override
+    public List<Type> values() {
+        List guideTypes = new ArrayList<Type>();
+        guideTypes.add(TEST_GUIDE);
+        return guideTypes;
     }
 
-    public enum EGuideType {
-        TEST_GUIDE {
-            @Override
-            public String getName() {
-                return "test_guide";
-            }
-
-            @Override
-            public String getTranlatedName(Context context) {
-                return "Testing guide";
-            }
-
-            @Override
-            public Spanned getContentHtml(Context context) {
-                return null;
-            }
-        };
-
-        public abstract String getName();
-        public abstract String getTranlatedName(Context context);
-        public abstract Spanned getContentHtml(Context context);
+    public static GuideType getInstance() {
+        return guideType;
+    }
+    public static Type getTestGuide(){
+        return TEST_GUIDE;
     }
 }
-
-
-
-
-
 

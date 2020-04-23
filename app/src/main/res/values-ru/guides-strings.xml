@@ -3,4 +3,5 @@
     <string name="title_guide_list">Гайды</string>
     <string name="title_guide_detail">Гайд</string>
     <string name="menu_item_guides">Гайды</string>
+    <string name="guide_testing_name">Гайд для теста</string>
 </resources>
