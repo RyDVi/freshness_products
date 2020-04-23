@@ -110,6 +110,7 @@ public abstract class CameraActivity extends AppCompatActivity
                 //Необходимо реализовать навигацию к ProductDetailActivity с ИД продукта
                 Intent intent = new Intent(this, ProductDetailActivity.class);
                 intent.putExtra(ProductDetailActivity.ARG_PRODUCT_ID, findedProduct.getName());
+                intent.putExtra(ProductDetailActivity.ARG_LAST_ACTIVITY, getClass().getName());
                 startActivity(intent);
             }
         });

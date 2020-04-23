@@ -9,10 +9,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.rydvi.product.edibility.recognizer.R;
+import com.rydvi.product.edibility.recognizer.classifier.ClassifierActivity;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
     public static final String ARG_PRODUCT_ID = "product_id";
+    //Параметр необходим для навигации в ClassifierActivity, поскольку с помощью навигации назад
+    //камера перестает работать
+    public static final String ARG_LAST_ACTIVITY = "activity_class_name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +44,25 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            navigateUpTo(new Intent(this, ProductListActivity.class));
+        String lastActivity = getIntent().getStringExtra(ARG_LAST_ACTIVITY);
+        if (lastActivity == null) {
+            int id = item.getItemId();
+            if (id == android.R.id.home) {
+                navigateUpTo(new Intent(this, ProductListActivity.class));
+                return true;
+            }
+        } else if (lastActivity.equalsIgnoreCase(ClassifierActivity.class.getName())) {
+            Intent intent = new Intent(this, ClassifierActivity.class);
+            startActivity(intent);
             return true;
+        } else {
+            int id = item.getItemId();
+            if (id == android.R.id.home) {
+                navigateUpTo(new Intent(this, ProductListActivity.class));
+                return true;
+            }
         }
+
         return super.onOptionsItemSelected(item);
     }
 }
