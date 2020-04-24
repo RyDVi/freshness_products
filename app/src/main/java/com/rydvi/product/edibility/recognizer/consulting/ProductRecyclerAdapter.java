@@ -11,18 +11,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rydvi.product.edibility.recognizer.R;
+import com.rydvi.product.edibility.recognizer.api.Type;
 
 import java.util.List;
-
-import static com.rydvi.product.edibility.recognizer.api.ProductType.EProductType;
 
 public class ProductRecyclerAdapter extends RecyclerView.Adapter<ProductRecyclerAdapter.ViewHolder>
         implements View.OnClickListener {
 
     private Activity parentActivity;
-    private List<EProductType> products;
+    private List<Type> products;
 
-    public ProductRecyclerAdapter(Activity parentActivity, List<EProductType> products) {
+    public ProductRecyclerAdapter(Activity parentActivity, List<Type> products) {
         this.parentActivity = parentActivity;
         this.products = products;
     }
@@ -37,7 +36,7 @@ public class ProductRecyclerAdapter extends RecyclerView.Adapter<ProductRecycler
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        EProductType product = products.get(position);
+        Type product = products.get(position);
         holder.mProductNameView.setText(product.getTranlatedName(parentActivity));
 
         holder.itemView.setTag(product);
@@ -51,13 +50,13 @@ public class ProductRecyclerAdapter extends RecyclerView.Adapter<ProductRecycler
 
     @Override
     public void onClick(View view) {
-        EProductType product = (EProductType) view.getTag();
+        Type product = (Type) view.getTag();
         Intent intent = new Intent(parentActivity, ProductDetailActivity.class);
         intent.putExtra(ProductDetailActivity.ARG_PRODUCT_ID, product.getName());
         parentActivity.startActivity(intent);
     }
 
-    void refreshProducts(List<EProductType> products) {
+    void refreshProducts(List<Type> products) {
         this.products = products;
         notifyDataSetChanged();
     }

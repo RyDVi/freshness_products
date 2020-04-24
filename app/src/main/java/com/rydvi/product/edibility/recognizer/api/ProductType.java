@@ -2,34 +2,24 @@ package com.rydvi.product.edibility.recognizer.api;
 
 
 import android.content.Context;
-import android.text.Html;
-import android.text.Spanned;
 
 import com.rydvi.product.edibility.recognizer.R;
 
-public final class ProductType {
-    /**
-     * Ищет тим продукта по имени продукта из меток
-     *
-     * @param name - имя продукта из меток в product_recognier_labels.txt
-     * @return - тип продукта
-     */
-    public static EProductType findProductTypeByName(String name) {
-        for (EProductType productType : EProductType.values()) {
-            if (name.equalsIgnoreCase(productType.getName())) {
-                return productType;
-            }
-        }
-        return null;
-    }
+import java.util.Arrays;
+import java.util.List;
 
-    public enum EProductType {
-        BEEF {
+public class ProductType extends TypeContainer {
+    static final ProductType productType = new ProductType();
+    static Type BEEF;
+    static Type BREAD;
+    static Type ANOTHER;
+
+    public ProductType() {
+        BEEF = new Type() {
             @Override
             public String getName() {
-                return "beef";
+                return "bread";
             }
-
 
             @Override
             public String getTranlatedName(Context context) {
@@ -37,12 +27,12 @@ public final class ProductType {
             }
 
             @Override
-            public Spanned getConsultingHtml(Context context) {
-                return Html.fromHtml(context.getText(R.string.beef_consulting).toString());
+            public String getHtmlPath() {
+                return getTranslateHtmlToType(this);
             }
+        };
 
-        },
-        BREAD {
+        BREAD = new Type() {
             @Override
             public String getName() {
                 return "bread";
@@ -54,11 +44,11 @@ public final class ProductType {
             }
 
             @Override
-            public Spanned getConsultingHtml(Context context) {
-                return null;
+            public String getHtmlPath() {
+                return getTranslateHtmlToType(this);
             }
-        },
-        ANOTHER {
+        };
+        ANOTHER = new Type() {
             @Override
             public String getName() {
                 return "another";
@@ -66,20 +56,33 @@ public final class ProductType {
 
             @Override
             public String getTranlatedName(Context context) {
-                return null;
+                return context.getResources().getString(R.string.another_name);
             }
 
             @Override
-            public Spanned getConsultingHtml(Context context) {
-                return null;
+            public String getHtmlPath() {
+                return getTranslateHtmlToType(this);
             }
         };
+        listTypes.addAll(Arrays.asList(BEEF, BREAD));
+    }
 
-        public abstract String getName();
+    @Override
+    public String getContainerName() {
+        return "products";
+    }
 
-        public abstract String getTranlatedName(Context context);
+    @Override
+    public List<Type> values() {
+        return listTypes;
+    }
 
-        public abstract Spanned getConsultingHtml(Context context);
+    public static ProductType getInstance() {
+        return productType;
+    }
+
+    public static Type getAnother() {
+        return ANOTHER;
     }
 }
 

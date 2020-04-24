@@ -1,26 +1,24 @@
 package com.rydvi.product.edibility.recognizer.consulting;
 
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.webkit.WebView;
 
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.rydvi.product.edibility.recognizer.R;
-
-import static com.rydvi.product.edibility.recognizer.api.ProductType.EProductType;
-import static com.rydvi.product.edibility.recognizer.api.ProductType.findProductTypeByName;
+import com.rydvi.product.edibility.recognizer.api.ProductType;
+import com.rydvi.product.edibility.recognizer.api.Type;
 
 
 public class ProductDetailFragment extends Fragment {
 
     public static final String ARG_PRODUCT_ID = "product_id";
-    private EProductType detailProduct;
-    private TextView textProductConsulting;
+    private Type mDetailProduct;
+    private WebView mDetailProductView;
 
     public ProductDetailFragment() {
     }
@@ -28,7 +26,13 @@ public class ProductDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        CollapsingToolbarLayout appBarLayout = getActivity().findViewById(R.id.toolbar_layout);
+        if (getArguments().containsKey(ARG_PRODUCT_ID)) {
+            mDetailProduct = ProductType.getInstance().findTypeByName(getArguments().getString(ARG_PRODUCT_ID));
+            if (appBarLayout != null) {
+                appBarLayout.setTitle(mDetailProduct.getTranlatedName(getContext()));
+            }
+        }
     }
 
     @Override
@@ -36,17 +40,11 @@ public class ProductDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.product_detail, container, false);
 
-        textProductConsulting = rootView.findViewById(R.id.product_detail);
-
-        CollapsingToolbarLayout appBarLayout = getActivity().findViewById(R.id.toolbar_layout);
-        if (getArguments().containsKey(ARG_PRODUCT_ID)) {
-            detailProduct = findProductTypeByName(getArguments().getString(ARG_PRODUCT_ID));
-            if (appBarLayout != null) {
-                appBarLayout.setTitle(detailProduct.getTranlatedName(getContext()));
-            }
-            textProductConsulting.setText(detailProduct.getConsultingHtml(getContext()));
+        mDetailProductView = rootView.findViewById(R.id.product_detail);
+        if (mDetailProduct != null) {
+            mDetailProductView.getSettings().setJavaScriptEnabled(true);
+            mDetailProductView.loadUrl(mDetailProduct.getHtmlPath());
         }
-
         return rootView;
     }
 }

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--  Bread  -->
-    <string name="beef_consulting"></string>
     <string name="beef_name">Beef</string>
 
     <!--  Beef  -->
     <string name="bread_name">Bread</string>
-    <string name="bread_consulting" />
+
+    <!--  Another -->
+    <string name="another_name">Another</string>
 </resources>

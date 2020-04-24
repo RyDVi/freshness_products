@@ -89,7 +89,7 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
                 if (resultsClassifierProducts != null && resultsClassifierProducts.size() >= 1) {
                     Classifier.Recognition recognitionProduct = resultsClassifierProducts.get(0);
                     if (recognitionProduct != null) {
-                        findedProduct = ProductType.findProductTypeByName(recognitionProduct.getTitle());
+                        findedProduct = ProductType.getInstance().findTypeByName(recognitionProduct.getTitle());
                     }
                 } else {
                     findedProduct = null;

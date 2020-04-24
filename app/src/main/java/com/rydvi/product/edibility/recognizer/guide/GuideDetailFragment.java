@@ -17,6 +17,7 @@ import com.rydvi.product.edibility.recognizer.api.Type;
 public class GuideDetailFragment extends Fragment {
     public static final String ARG_GUIDE_ID = "guide_id";
     private Type mGuideDetail;
+    private WebView mGuideDetailView;
 
     public GuideDetailFragment() {
     }
@@ -41,11 +42,10 @@ public class GuideDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.guide_detail, container, false);
-
+        mGuideDetailView = rootView.findViewById(R.id.guide_detail);
         if (mGuideDetail != null) {
-            WebView guideDetail = rootView.findViewById(R.id.guide_detail);
-            guideDetail.getSettings().setJavaScriptEnabled(true);
-            guideDetail.loadUrl(mGuideDetail.getHtmlPath());
+            mGuideDetailView.getSettings().setJavaScriptEnabled(true);
+            mGuideDetailView.loadUrl(mGuideDetail.getHtmlPath());
         }
 
         return rootView;

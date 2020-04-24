@@ -8,11 +8,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rydvi.product.edibility.recognizer.R;
+import com.rydvi.product.edibility.recognizer.api.ProductType;
+import com.rydvi.product.edibility.recognizer.api.Type;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.rydvi.product.edibility.recognizer.api.ProductType.EProductType;
 
 
 public class ProductListActivity extends AppCompatActivity {
@@ -40,20 +39,14 @@ public class ProductListActivity extends AppCompatActivity {
             mTwoPane = true;
         }
         //Добавляем все типы продуктов, кроме ANOTHER
-        List<EProductType> productTypes = new ArrayList<>();
-        for (EProductType productType : EProductType.values()) {
-            if (!productType.equals(EProductType.ANOTHER)) {
-                productTypes.add(productType);
-            }
-        }
         if (recyclerView.getAdapter() == null) {
-            setupRecyclerView(recyclerView, productTypes);
+            setupRecyclerView(recyclerView, ProductType.getInstance().values());
         } else {
-            ((ProductRecyclerAdapter) recyclerView.getAdapter()).refreshProducts(productTypes);
+            ((ProductRecyclerAdapter) recyclerView.getAdapter()).refreshProducts(ProductType.getInstance().values());
         }
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<EProductType> products) {
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Type> products) {
         recyclerView.setAdapter(new ProductRecyclerAdapter(this, products));
     }
 }
