@@ -8,7 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rydvi.product.edibility.recognizer.R;
-import com.rydvi.product.edibility.recognizer.api.ProductType;
+import com.rydvi.product.edibility.recognizer.api.ProductContainer;
 import com.rydvi.product.edibility.recognizer.api.Type;
 
 import java.util.List;
@@ -40,9 +40,9 @@ public class ProductListActivity extends AppCompatActivity {
         }
         //Добавляем все типы продуктов, кроме ANOTHER
         if (recyclerView.getAdapter() == null) {
-            setupRecyclerView(recyclerView, ProductType.getInstance().values());
+            setupRecyclerView(recyclerView, ProductContainer.getInstance().values());
         } else {
-            ((ProductRecyclerAdapter) recyclerView.getAdapter()).refreshProducts(ProductType.getInstance().values());
+            ((ProductRecyclerAdapter) recyclerView.getAdapter()).refreshProducts(ProductContainer.getInstance().values());
         }
     }
 

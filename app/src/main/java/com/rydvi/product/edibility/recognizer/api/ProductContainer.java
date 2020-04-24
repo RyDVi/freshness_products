@@ -8,13 +8,13 @@ import com.rydvi.product.edibility.recognizer.R;
 import java.util.Arrays;
 import java.util.List;
 
-public class ProductType extends TypeContainer {
-    static final ProductType productType = new ProductType();
-    static Type BEEF;
-    static Type BREAD;
-    static Type ANOTHER;
+public class ProductContainer extends TypeContainer {
+    private static final ProductContainer PRODUCT_CONTAINER = new ProductContainer();
+    private static Type BEEF;
+    private static Type BREAD;
+    private static Type ANOTHER;
 
-    public ProductType() {
+    public ProductContainer() {
         BEEF = new Type() {
             @Override
             public String getName() {
@@ -77,8 +77,8 @@ public class ProductType extends TypeContainer {
         return listTypes;
     }
 
-    public static ProductType getInstance() {
-        return productType;
+    public static ProductContainer getInstance() {
+        return PRODUCT_CONTAINER;
     }
 
     public static Type getAnother() {

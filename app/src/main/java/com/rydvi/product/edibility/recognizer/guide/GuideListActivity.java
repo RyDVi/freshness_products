@@ -10,7 +10,7 @@ import androidx.core.app.NavUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rydvi.product.edibility.recognizer.R;
-import com.rydvi.product.edibility.recognizer.api.GuideType;
+import com.rydvi.product.edibility.recognizer.api.GuideContainer;
 import com.rydvi.product.edibility.recognizer.api.Type;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class GuideListActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.guide_list);
         List<Type> guideTypes = new ArrayList<>();
-        for (Type guideType : GuideType.getInstance().values()) {
+        for (Type guideType : GuideContainer.getInstance().values()) {
             guideTypes.add(guideType);
         }
         setupRecyclerView(guideTypes);

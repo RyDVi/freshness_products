@@ -3,6 +3,7 @@
     <string name="title_guide_list">Guides</string>
     <string name="title_guide_detail">Guide Detail</string>
     <string name="menu_item_guides">Guides</string>
-    <string name="guide_recognizer_consulting"></string>
-    <string name="guide_testing_name">Testing guide</string>
+    <string name="guide_recognizer_name">How use Product freshness recognizer</string>
+    <string name="guide_products_name">How to use product freshness data</string>
+    <string name="guide_about_application_name">About application</string>
 </resources>

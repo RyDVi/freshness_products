@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.rydvi.product.edibility.recognizer.R;
-import com.rydvi.product.edibility.recognizer.api.ProductType;
+import com.rydvi.product.edibility.recognizer.api.ProductContainer;
 import com.rydvi.product.edibility.recognizer.api.Type;
 
 
@@ -28,7 +28,7 @@ public class ProductDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         CollapsingToolbarLayout appBarLayout = getActivity().findViewById(R.id.toolbar_layout);
         if (getArguments().containsKey(ARG_PRODUCT_ID)) {
-            mDetailProduct = ProductType.getInstance().findTypeByName(getArguments().getString(ARG_PRODUCT_ID));
+            mDetailProduct = ProductContainer.getInstance().findTypeByName(getArguments().getString(ARG_PRODUCT_ID));
             if (appBarLayout != null) {
                 appBarLayout.setTitle(mDetailProduct.getTranlatedName(getContext()));
             }

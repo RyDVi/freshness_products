@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="title_guide_list">Гайды</string>
-    <string name="title_guide_detail">Гайд</string>
-    <string name="menu_item_guides">Гайды</string>
-    <string name="guide_testing_name">Гайд для теста</string>
+    <string name="title_guide_list">Инструкции</string>
+    <string name="title_guide_detail">Инструкция</string>
+    <string name="menu_item_guides">Инструкции</string>
+    <string name="guide_recognizer_name">Как пользоваться распознавателем свежести продукта</string>
+    <string name="guide_products_name">Как пользоваться данными по определению свежести для продукта</string>
+    <string name="guide_about_application_name">О приложении</string>
 </resources>

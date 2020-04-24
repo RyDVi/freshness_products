@@ -33,7 +33,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.rydvi.product.edibility.recognizer.R;
-import com.rydvi.product.edibility.recognizer.api.ProductType;
+import com.rydvi.product.edibility.recognizer.api.ProductContainer;
 import com.rydvi.product.edibility.recognizer.api.Type;
 import com.rydvi.product.edibility.recognizer.classifier.env.ImageUtils;
 import com.rydvi.product.edibility.recognizer.classifier.env.Logger;
@@ -106,7 +106,7 @@ public abstract class CameraActivity extends AppCompatActivity
             //Навигация к продукту, если он был найден.
             //Наденный продукт хранится в переменной findedProduct
             //Навигация не происходит, если найденный продукт - another
-            if (findedProduct != null && !findedProduct.equals(ProductType.getAnother())) {
+            if (findedProduct != null && !findedProduct.equals(ProductContainer.getAnother())) {
                 //Необходимо реализовать навигацию к ProductDetailActivity с ИД продукта
                 Intent intent = new Intent(this, ProductDetailActivity.class);
                 intent.putExtra(ProductDetailActivity.ARG_PRODUCT_ID, findedProduct.getName());
@@ -411,7 +411,7 @@ public abstract class CameraActivity extends AppCompatActivity
     @UiThread
     protected void showResultsInWindow(List<Recognition> resultsClassifierProducts,
                                        List<Recognition> resultsClassifierEdibility) {
-        if (findedProduct!=null && !findedProduct.equals(ProductType.getAnother())) {
+        if (findedProduct!=null && !findedProduct.equals(ProductContainer.getAnother())) {
             clickForGoToProductTextView.setVisibility(TextView.VISIBLE);
             if (resultsClassifierProducts != null && resultsClassifierProducts.size() >= 1) {
                 Recognition recognitionProduct = resultsClassifierProducts.get(0);

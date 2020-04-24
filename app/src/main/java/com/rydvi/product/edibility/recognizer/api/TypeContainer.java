@@ -6,7 +6,7 @@ import java.util.Locale;
 
 /**
  * Попытка реализации enum класса в собственном исполнении
- * Необходим для повторяемых неизменяемых (статичных) GuideType и ProductType
+ * Необходим для повторяемых неизменяемых (статичных) GuideContainer и ProductContainer
  */
 public abstract class TypeContainer {
     public final List<Type> listTypes = new ArrayList<>();
@@ -49,7 +49,7 @@ public abstract class TypeContainer {
      * @return путь до html
      */
     public String getTranslateHtmlToType(Type type) {
-        if (Locale.getDefault().getDisplayLanguage().equalsIgnoreCase("ru")) {
+        if (Locale.getDefault().getLanguage().equalsIgnoreCase("ru")) {
             return getPathToType(type) + type.getName()+"_ru.html";
         } else {
             return getPathToType(type) + type.getName()+"_en.html";

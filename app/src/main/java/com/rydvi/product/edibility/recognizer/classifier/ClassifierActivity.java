@@ -8,7 +8,7 @@ import android.util.Size;
 import android.util.TypedValue;
 
 import com.rydvi.product.edibility.recognizer.R;
-import com.rydvi.product.edibility.recognizer.api.ProductType;
+import com.rydvi.product.edibility.recognizer.api.ProductContainer;
 import com.rydvi.product.edibility.recognizer.classifier.env.BorderedText;
 import com.rydvi.product.edibility.recognizer.classifier.env.Logger;
 import com.rydvi.product.edibility.recognizer.classifier.tflite.Classifier;
@@ -89,7 +89,7 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
                 if (resultsClassifierProducts != null && resultsClassifierProducts.size() >= 1) {
                     Classifier.Recognition recognitionProduct = resultsClassifierProducts.get(0);
                     if (recognitionProduct != null) {
-                        findedProduct = ProductType.getInstance().findTypeByName(recognitionProduct.getTitle());
+                        findedProduct = ProductContainer.getInstance().findTypeByName(recognitionProduct.getTitle());
                     }
                 } else {
                     findedProduct = null;

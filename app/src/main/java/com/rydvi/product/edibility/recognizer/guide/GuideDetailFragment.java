@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.rydvi.product.edibility.recognizer.R;
-import com.rydvi.product.edibility.recognizer.api.GuideType;
+import com.rydvi.product.edibility.recognizer.api.GuideContainer;
 import com.rydvi.product.edibility.recognizer.api.Type;
 
 public class GuideDetailFragment extends Fragment {
@@ -30,7 +30,7 @@ public class GuideDetailFragment extends Fragment {
             Activity activity = this.getActivity();
             String guideName = getArguments().getString(ARG_GUIDE_ID);
 
-            mGuideDetail = GuideType.getInstance().findTypeByName(guideName);
+            mGuideDetail = GuideContainer.getInstance().findTypeByName(guideName);
             CollapsingToolbarLayout appBarLayout = activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
                 appBarLayout.setTitle(mGuideDetail.getTranlatedName(getContext()));
