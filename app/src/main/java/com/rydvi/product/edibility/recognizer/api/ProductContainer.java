@@ -18,7 +18,7 @@ public class ProductContainer extends TypeContainer {
         BEEF = new Type() {
             @Override
             public String getName() {
-                return "bread";
+                return "beef";
             }
 
             @Override

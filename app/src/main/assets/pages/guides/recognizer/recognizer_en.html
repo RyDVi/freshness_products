@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to use a food freshness recognizer</title>
+</head>
+
+<body>
+    <p>
+        This manual will explain how to use the food freshness recognizer.
+    </p>
+    <p>
+        To use freshness recognition in the main menu, select "Freshness Recognition". In the screen that opens, the image transmitted from the camera and a window with recognition information are displayed. When you hover over a known product program
+        the window displays information:
+        <ul>
+            <li> Product Name (1 in the screenshot) </li>
+            <li> Probability that this is the same product (2 in the screenshot). With a probability of 60%, we can assume that this is the same product. </li>
+            <li> Fresh or not fresh product (3 in the screenshot) </li>
+            <li> The probability that freshness is valid (4 in the screenshot). From 60% it can be considered that freshness is valid </li>
+        </ul>
+        <img src = "recognizer_product_beef_freshness.jpg" width = "200px" height = "400px" />
+    </p>
+    <p>
+        The color of the window can determine the freshness of the product:
+        <ul>
+            <li> If the window is yellow and it says "Unknown product" - this means that the product has not been defined and it is not possible for it to determine freshness. Below you can see a screenshot. </li>
+            <li> If the window is red, the product is spoiled or not fresh. </li>
+            <li> If the window is green, the product is fresh and not spoiled. </li>
+        </ul>
+        <img src = "recognier_product_unknown.jpg" width = "200px" height = "400px" />
+    </p>
+    <p>
+        <div> If the product has been determined, then you can go to additional information on how to determine the freshness of the product by clicking on the window. </div>
+        <img src = "detail_beef.jpg" width = "200px" height = "400px" />
+    </p>
+</body>
+
+</html>
