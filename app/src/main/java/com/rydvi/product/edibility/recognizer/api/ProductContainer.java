@@ -13,6 +13,7 @@ public class ProductContainer extends TypeContainer {
     private static Type BEEF;
     private static Type BREAD;
     private static Type ANOTHER;
+    private static Type TOMATO;
 
     public ProductContainer() {
         BEEF = new Type() {
@@ -64,7 +65,24 @@ public class ProductContainer extends TypeContainer {
                 return getTranslateHtmlToType(this);
             }
         };
-        listTypes.addAll(Arrays.asList(BEEF, BREAD));
+        TOMATO = new Type(){
+
+            @Override
+            public String getName() {
+                return "tomato";
+            }
+
+            @Override
+            public String getTranlatedName(Context context) {
+                return context.getResources().getString(R.string.tomato_name);
+            }
+
+            @Override
+            public String getHtmlPath() {
+                return getTranslateHtmlToType(this);
+            }
+        };
+        listTypes.addAll(Arrays.asList(BEEF, BREAD, TOMATO));
     }
 
     @Override

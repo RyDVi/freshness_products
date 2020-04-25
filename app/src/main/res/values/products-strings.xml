@@ -8,4 +8,7 @@
 
     <!--  Another -->
     <string name="another_name">Another</string>
+
+    <!--  Tomato  -->
+    <string name="tomato_name">Tomato</string>
 </resources>

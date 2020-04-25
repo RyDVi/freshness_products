@@ -9,4 +9,6 @@
     <!-- Another -->
     <string name="another_name">Другое</string>
 
+    <!--  Tomato  -->
+    <string name="tomato_name">Томат</string>
 </resources>
